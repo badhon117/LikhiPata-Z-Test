@@ -65,6 +65,12 @@ if (currentBook.parentId) {
   renderTable();
   renderSummary();
 
+    // ফর্মুলা ফিল্ড থাকলে হেডারের ƒx বাটন দেখাই
+  const hasFormula = currentBook.fields.some(f => f.type === 'formula');
+  const formulaBtn = document.getElementById('viewFormulaInfoBtn');
+  if (formulaBtn) formulaBtn.style.display = hasFormula ? 'inline-flex' : 'none';
+
+
 // 👇 নতুন: সর্ট ফিল্ড সিলেক্টর প্রাথমিকভাবে পপুলেট
 if (typeof populateSortFieldOptions === 'function') {
   populateSortFieldOptions(document.getElementById('sortBy')?.value || 'newest');
@@ -2378,4 +2384,47 @@ function updateTableAndSummaries() {
   if (document.getElementById('chartModal')?.classList.contains('open')) {
     renderChart();
   }
+}
+
+/* ============================================================
+   FORMULA INFO MODAL (ভিউ পেজ থেকে সব ফর্মুলা দেখা)
+   ============================================================ */
+function openFormulaInfoModal() {
+  if (!currentBook || !Array.isArray(currentBook.fields)) return;
+
+  const body = document.getElementById('formulaInfoBody');
+  const formulaFields = currentBook.fields.filter(f => f.type === 'formula');
+
+  if (formulaFields.length === 0) {
+    body.innerHTML = `
+      <div style="text-align:center; padding: 24px 12px; color: var(--text-muted); font-size: 14px;">
+        এই বুকে এখনো কোনো ফর্মুলা ফিল্ড তৈরি করা হয়নি।
+      </div>
+    `;
+  } else {
+    body.innerHTML = formulaFields.map(f => {
+      // আপনার formula-engine.js-এ থাকা prettifyFormula ব্যবহার করে key-এর বদলে বাংলা নাম দেখানো হচ্ছে
+      const readableFormula = (typeof prettifyFormula === 'function' && f.formula)
+        ? prettifyFormula(f.formula, currentBook.fields)
+        : (f.formula || 'ফর্মুলা সেট করা নেই');
+
+      return `
+        <div style="padding: 12px 14px; border-radius: 10px; background: var(--bg-subtle); border: 1px solid var(--border-subtle);">
+          <div style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🧮</span>
+            <span>${escapeHtml(f.label)}</span>
+          </div>
+          <div style="font-size: 13.5px; font-weight: 600; color: #92400E; background: #FEF3C7; border: 1px solid #FDE68A; padding: 8px 10px; border-radius: 8px; word-break: break-word;">
+            ${escapeHtml(readableFormula)}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('formulaInfoModal')?.classList.add('open');
+}
+
+function closeFormulaInfoModal() {
+  document.getElementById('formulaInfoModal')?.classList.remove('open');
 }
