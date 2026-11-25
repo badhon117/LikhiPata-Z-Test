@@ -28,6 +28,9 @@
   <button class="header-icon-btn" id="viewRedoBtn" onclick="redoForm()" title="রিডু" 
     style="opacity: 0.3; pointer-events: none;">↷</button>
 
+        <!-- 👇 নতুন: ফর্মুলা দেখার বাটন -->
+    <button class="header-icon-btn" id="viewFormulaInfoBtn" onclick="openFormulaInfoModal()" title="ফর্মুলা তালিকা" style="display:none;">ƒx</button>
+
     <button class="header-icon-btn" onclick="openBuilder()" title="এডিট">✏️</button>
   </div>
 
@@ -293,6 +296,25 @@
     </div>
   </div>
 </div>
+
+  <!-- ========== FORMULA INFO MODAL ========== -->
+<div class="modal-overlay" id="formulaInfoModal" onclick="if(event.target===this) closeFormulaInfoModal()">
+  <div class="modal-content" style="max-width: 460px; width: 95%;">
+    <h3 style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <span>🧮 ব্যবহৃত ফর্মুলা সমূহ</span>
+      <button class="close-x" onclick="closeFormulaInfoModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted);">✕</button>
+    </h3>
+
+    <div id="formulaInfoBody" style="display: flex; flex-direction: column; gap: 12px; max-height: 60vh; overflow-y: auto;">
+      <!-- JS দিয়ে ফর্মুলাগুলো এখানে বসবে -->
+    </div>
+
+    <div class="modal-actions" style="margin-top: 20px;">
+      <button class="btn btn-cancel" onclick="closeFormulaInfoModal()">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- FAB (Floating Action Button) for adding new entry -->
 <button class="fab-add-entry" id="fabAddEntry" onclick="cancelForm(); switchViewTab('form')" title="নতুন এন্ট্রি">
