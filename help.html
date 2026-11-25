@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1E3A8A">
+<title>হেল্প ও সাপোর্ট — লিখিপাতা</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/pages.css">
+<style>
+  /* ============ Help Specific Styles ============ */
+  
+  .help-hero {
+    text-align: center;
+    padding: 32px 20px 24px;
+    background: linear-gradient(160deg, #EFF6FF 0%, #F5F3FF 100%);
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    border: 1px solid var(--border-subtle);
+  }
+  .help-hero .logo-box {
+    width: 84px; height: 84px; margin: 0 auto 14px;
+    border-radius: 22px; background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    box-shadow: 0 8px 24px rgba(30,58,138,0.15);
+  }
+  .help-hero h1 { font-size: 24px; color: var(--primary); font-weight: 800; margin-bottom: 6px; }
+  .help-hero p { font-size: 14px; color: var(--text-muted); }
+
+  /* FAQ Accordion */
+  .faq-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 24px 0 12px 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .faq-accordion {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-header {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  
+  .faq-icon {
+    color: var(--primary-light);
+    transition: transform 0.3s;
+    font-size: 12px;
+  }
+  
+  .faq-body {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  
+  .faq-accordion.open {
+    border-color: var(--primary-light);
+  }
+  .faq-accordion.open .faq-icon {
+    transform: rotate(180deg);
+    color: var(--primary-light);
+  }
+  .faq-accordion.open .faq-body {
+    padding: 0 18px 18px 18px;
+    max-height: 400px;
+  }
+
+  .faq-body code {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  /* Contact Cards */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .contact-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 20px 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .contact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+  }
+  .contact-card .icon {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+  .contact-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+  }
+  .contact-card p {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  /* Dark & AMOLED */
+  body.dark-mode .help-hero { background: linear-gradient(160deg, #1E293B 0%, #1E1B4B 100%); }
+  body.dark-mode .help-hero .logo-box { background: #0F172A; }
+  body.dark-mode .faq-accordion { background: var(--bg-card); border-color: #334155; }
+  body.dark-mode .contact-card { background: var(--bg-card); border-color: #334155; }
+  
+  body.amoled-mode .help-hero { background: linear-gradient(160deg, #000000 0%, #042F2E 100%); border-color: #333; }
+  body.amoled-mode .help-hero .logo-box { background: #111111; }
+  body.amoled-mode .faq-accordion { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .contact-card { background: #0A0A0A; border-color: #222; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+    <h1>💬 হেল্প ও সাপোর্ট</h1>
+  </div>
+
+  <div class="screen">
+    
+    <!-- Hero -->
+<div class="help-hero">
+  <div class="logo-box">🛠️</div>
+  <h1>কীভাবে সাহায্য করতে পারি?</h1>
+  <p>সাধারণ সমস্যার সমাধান ও যোগাযোগের মাধ্যম</p>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section-title">❓ সাধারণ জিজ্ঞাসা (FAQ)</div>
+
+<!-- ১ -->
+<div class="faq-accordion open">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>আমার ডেটা কি নিরাপদ? ফোন হারালে কী হবে?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>আপনার সব ডেটা আপনার ফোনের ব্রাউজারেই (IndexedDB ও LocalStorage) সেভ থাকে। এটি ১০০% নিরাপদ এবং কোনো সার্ভারে যায় না। তবে ফোন হারালে বা ব্রাউজার ডেটা ক্লিয়ার করলে ডেটা মুছে যেতে পারে। তাই <b>সপ্তাহে অন্তত একবার</b> মেনু থেকে <b>ব্যাকআপ ডাউনলোড</b> করুন অথবা <b>গুগল ড্রাইভ সিঙ্ক</b> চালু রাখুন।</p>
+  </div>
+</div>
+
+<!-- ২ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>গুগল ড্রাইভ সিঙ্ক কাজ করছে না কেন?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>সিঙ্ক কাজ না করার কয়েকটি কারণ থাকতে পারে:</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li>ইন্টারনেট কানেকশন ঠিক নেই।</li>
+      <li>গুগল সেশন এক্সপায়ার হয়েছে। মেনু থেকে আবার <b>কানেক্ট</b> করুন।</li>
+      <li>ব্রাউজারের থার্ড-পার্টি কুকি ব্লক করা আছে। সেটিংস থেকে কুকি অন করুন।</li>
+      <li>Chrome ব্রাউজার ব্যবহার করলে সবচেয়ে ভালো কাজ করে।</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ৩ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>CSV বা Excel ফাইল কীভাবে ইমপোর্ট করব?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>প্রথমে বুকের ভেতরে ফিল্ডগুলো তৈরি করুন। এরপর <b>Statistics</b> ট্যাবে গিয়ে <b>📤 ইমপোর্ট</b> বাটনে ক্লিক করুন। সেখানে CSV বা Excel ফাইল আপলোড করে কলাম ম্যাপিং (কোন কলাম কোথায় যাবে) ঠিক করলেই ডেটা চলে আসবে।</p>
+    <p style="margin-top:8px;"><b>💡 টিপস:</b> Excel ফাইলে একাধিক শিট থাকলে অ্যাপ আপনাকে শিট সিলেক্ট করার অপশন দেবে। আর ফাইলে <code>_id</code> কলাম থাকলে পুরোনো ডেটা আপডেট হবে, না থাকলে নতুন এন্ট্রি তৈরি হবে।</p>
+  </div>
+</div>
+
+<!-- ৪ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>ভুলে ফিল্ড বা এন্ট্রি ডিলিট করে ফেলেছি, ফিরে পাব কীভাবে?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>চিন্তা করবেন না! মেনু থেকে <b>🗑️ রিসাইকেল বিন</b>-এ যান। সেখানে ডিলিট করা বুক ও এন্ট্রি জমা থাকে। আপনি সেখান থেকে <b>রিস্টোর</b> ক্লিক করলেই ডেটা ফিরে আসবে।</p>
+    <p style="margin-top:8px;"><b>⚠️ সতর্কতা:</b> রিসাইকেল বিন থেকে "স্থায়ীভাবে মুছুন" ক্লিক করলে ডেটা আর কোনোভাবেই ফিরিয়ে আনা যাবে না।</p>
+  </div>
+</div>
+
+<!-- ৫ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>ফর্মুলা ফিল্ডে হিসাব করলে ভুল আসছে কেন?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>ফর্মুলায় ব্যবহৃত ভ্যারিয়েবলের নাম এবং বানান ঠিক আছে কিনা চেক করুন। মনে রাখবেন, ফর্মুলায় শুধু <b>নাম্বার</b> ও <b>ফর্মুলা</b> ফিল্ড ব্যবহার করা যাবে। টেক্সট ফিল্ড ফর্মুলায় কাজ করবে না।</p>
+    <p style="margin-top:8px;"><b>💡 উদাহরণ:</b> আপনার ফিল্ডের নাম যদি "মূল্য" হয়, তবে ফর্মুলায়ও ঠিক "মূল্য" লিখতে হবে। "মুল্য" (হ্রস্ব-উ) লিখলে কাজ করবে না।</p>
+  </div>
+</div>
+
+<!-- ৬ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>লুকআপ (Lookup) ফিল্ড কীভাবে ব্যবহার করব?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>লুকআপ ফিল্ড দিয়ে এক বুকের ডেটা অন্য বুক থেকে আনা যায়। যেমন: "বিক্রি" বুকের সাথে "কাস্টমার লিস্ট" বুক যুক্ত করা।</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li>বিল্ডারে <b>🔗 লুকআপ</b> ফিল্ড তৈরি করুন।</li>
+      <li>"উৎস বুক" নির্বাচন করুন (যেমন: কাস্টমার লিস্ট)।</li>
+      <li>কোন ফিল্ডের মান দেখাবে তা সিলেক্ট করুন (যেমন: কাস্টমারের নাম)।</li>
+      <li>চাইলে <b>অটো-ম্যাচ</b> চালু করে অন্য ফিল্ডের সাথে মিলিয়ে অটোমেটিক নাম বসাতে পারেন।</li>
+      <li><b>লাইভ লিংক</b> চালু থাকলে উৎস বুকের ডেটা পরিবর্তন হলে এখানেও আপডেট হবে (ইনভয়েসের জন্য বন্ধ রাখুন)।</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ৭ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>এক ফোন থেকে অন্য ফোনে ডেটা কীভাবে নেব?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>দুটি উপায়ে ডেটা ট্রান্সফার করতে পারবেন:</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li><b>গুগল ড্রাইভের মাধ্যমে (সহজ):</b> প্রথম ফোনে গুগল ড্রাইভে সিঙ্ক করুন। দ্বিতীয় ফোনে অ্যাপ খুলে একই গুগল অ্যাকাউন্টে সাইন-ইন করুন। প্রথমবার সিঙ্ক হলে <b>"মিলিয়ে নিন (Merge)"</b> সিলেক্ট করুন।</li>
+      <li><b>JSON ব্যাকআপের মাধ্যমে:</b> প্রথম ফোনে <b>ব্যাকআপ ডাউনলোড</b> করে ফাইলটি দ্বিতীয় ফোনে পাঠান। দ্বিতীয় ফোনে <b>ব্যাকআপ রিস্টোর</b> থেকে ফাইলটি আপলোড করুন।</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ৮ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>অ্যাপটি ইন্টারনেট ছাড়া কাজ করবে?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p><b>হ্যাঁ, ১০০% কাজ করবে।</b> এটি একটি PWA (Progressive Web App)। একবার অ্যাপটি খুললে এবং হোম স্ক্রিনে ইনস্টল করলে ইন্টারনেট ছাড়াই সব ফিচার (ডেটা এন্ট্রি, ফর্মুলা, চার্ট) কাজ করবে।</p>
+    <p style="margin-top:8px;"><b>⚠️ ব্যতিক্রম:</b> গুগল ড্রাইভ সিঙ্ক এবং ক্লাউড ব্যাকআপের জন্য ইন্টারনেট লাগবে।</p>
+  </div>
+</div>
+
+<!-- ৯ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>চার্ট বা গ্রাফ দেখা যাচ্ছে না কেন?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>চার্ট দেখতে হলে নিচের শর্তগুলো পূরণ হতে হবে:</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li>বিল্ডার থেকে অন্তত একটি <b>চার্ট সেকশন</b> তৈরি করতে হবে।</li>
+      <li>সেই সেকশনে <b>নাম্বার</b> বা <b>ফর্মুলা</b> ফিল্ড যুক্ত থাকতে হবে।</li>
+      <li>ডেটাতে শূন্যের চেয়ে বড় মান থাকতে হবে।</li>
+    </ul>
+    <p style="margin-top:8px;">যদি বিল্ডার থেকে সেকশন না বানানো থাকে, তবে অ্যাপ ডিফল্টভাবে সব নাম্বার ফিল্ড নিয়ে একটি চার্ট দেখাবে।</p>
+  </div>
+</div>
+
+<!-- ১০ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>বিল্ডারের "আনডু" (Undo) বাটন কাজ করছে না কেন?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>আনডু বাটন তখনই কাজ করে যখন আপনি কিছু পরিবর্তন করেন (যেমন নতুন ফিল্ড যোগ, ডিলিট বা এডিট)। যদি কিছুক্ষণ আগে কোনো পরিবর্তন না করে থাকেন, তবে আনডু বাটনটি হালকা (ডিজেবল) দেখাবে।</p>
+    <p style="margin-top:8px;"><b>💡 টিপস:</b> আনডু করে ফেললে পাশের <b>রিডু (↷)</b> বাটন দিয়ে আবার নতুন অবস্থায় ফিরে যেতে পারবেন।</p>
+  </div>
+</div>
+
+<!-- ১১ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>এক বুকের ডেটা অন্য বুকের ফর্মে কীভাবে পেস্ট করব?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>Statistics ট্যাবে যেকোনো এন্ট্রির ডান পাশে <b>📋 কপি</b> বাটনে ক্লিক করুন। এরপর অন্য বুকের ফর্ম ট্যাবে গেলে উপরে একটি <b>নীল রঙের সাজেশন কার্ড</b> দেখাবে। সেখানে <b>"পেস্ট"</b> ক্লিক করলেই ডেটা বসে যাবে।</p>
+    <p style="margin-top:8px;"><b>⚠️ শর্ত:</b> দুই বুকের ফিল্ডের নাম একই হতে হবে। নাম না মিললে সেই ফিল্ড বাদ যাবে।</p>
+  </div>
+</div>
+
+<!-- ১২ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>আমার ডেটা কি কেউ দেখতে পাবে?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p><b>না, কেউ দেখতে পাবে না।</b> আপনার ডেটা শুধু আপনার ফোনে সেভ থাকে। আপনি যদি গুগল ড্রাইভ সিঙ্ক চালু করেন, তবে ডেটা আপনার নিজের গুগল ড্রাইভের App Data Folder-এ সেভ হবে, যা গুগলের অন্য কোনো অ্যাপ দেখতে পারে না। <b>আমরা (ডেভেলপার) কোনো ডেটা দেখতে বা সংগ্রহ করতে পারি না।</b></p>
+  </div>
+</div>
+
+<!-- ১৩ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>ফিল্ডের কলাম প্রস্থ (Width) কেন দরকার?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>Statistics টেবিলে কলামগুলো যাতে সুন্দরভাবে দেখা যায় এবং লেখা কেটে না যায়, তাই কলামের প্রস্থ ঠিক করা যায়।</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li><b>ছোট:</b> চেকবক্স বা ছোট সংখ্যার জন্য।</li>
+      <li><b>মাঝারি:</b> ডিফল্ট সাইজ।</li>
+      <li><b>বড়:</b> লম্বা নাম বা টেক্সটের জন্য।</li>
+      <li><b>খুব বড়:</b> মন্তব্য বা ঠিকানার জন্য।</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ১৪ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>অ্যাপে নতুন ফিচার কখন কখন আসে?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>আমরা ইউজারদের ফিডব্যাক অনুযায়ী নিয়মিত নতুন ফিচার যুক্ত করি। নতুন কী কী এসেছে তা জানতে মেনু থেকে <b>📝 চেঞ্জলগ</b> পেজে যান। আপনার পছন্দের কোনো ফিচার চাইলে আমাদের ফিডব্যাক দিন।</p>
+  </div>
+</div>
+
+<!-- ১৫ -->
+<div class="faq-accordion">
+  <div class="faq-header" onclick="toggleFaq(this)">
+    <span>কোনো এন্ট্রি সেভ করতে গিয়ে আটকে গেলে কী করব?</span>
+    <span class="faq-icon">▼</span>
+  </div>
+  <div class="faq-body">
+    <p>যদি সেভ বাটনে ক্লিক করার পরেও সেভ না হয়, তবে:</p>
+    <ul style="padding-left:20px; margin-top:8px;">
+      <li>দেখুন কোনো আবশ্যিক (Required) ফিল্ড খালি আছে কিনা।</li>
+      <li>পেজটি একবার রিফ্রেশ দিন— আপনার লেখা অটো-সেভ ড্রাফট হিসেবে থাকবে।</li>
+      <li>ফোনের স্টোরেজ পূর্ণ হয়ে গেলে ডেটা সেভ হবে না। কিছু ছবি বা অপ্রয়োজনীয় অ্যাপ মুছে ফেলুন।</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Contact Section -->
+<div class="faq-section-title" style="margin-top: 30px;">📞 যোগাযোগ করুন</div>
+<p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 12px; padding: 0 4px;">আপনার সমস্যার সমাধান না পেলে সরাসরি আমাদের সাথে যোগাযোগ করুন।</p>
+
+<div class="contact-grid">
+  <a href="mailto:nishatbadhon117@gmail.com" class="contact-card">
+    <div class="icon">📧</div>
+    <h4>ইমেইল করুন</h4>
+    <p>nishatbadhon117@gmail.com</p>
+  </a>
+  <a href="feedback.html" class="contact-card">
+    <div class="icon">💬</div>
+    <h4>ফিডব্যাক পাঠান</h4>
+    <p>মতামত বা সমস্যা জানান</p>
+  </a>
+</div>
+
+<div style="margin-top: 16px;">
+  <a href="guide.html" class="btn btn-primary" style="display: flex; width: 100%; text-decoration: none; justify-content: center;">
+    📖 সম্পূর্ণ ইউজার গাইড দেখুন
+  </a>
+</div>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/storage-indexeddb.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof initStorage === 'function') await initStorage();
+    applyTheme(getTheme());
+  });
+
+  function toggleFaq(headerElement) {
+    const accordion = headerElement.parentElement;
+    const isOpen = accordion.classList.contains('open');
+
+    // একসাথে একটি খোলা রাখতে চাইলে নিচের লাইনটি ব্যবহার করুন
+    document.querySelectorAll('.faq-accordion').forEach(acc => acc.classList.remove('open'));
+
+    if (!isOpen) {
+      accordion.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>

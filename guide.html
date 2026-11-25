@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ইউজার গাইড — লিখিপাতা</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/pages.css">
+<style>
+  /* ============ Guide Specific Styles ============ */
+  
+  .guide-hero {
+    text-align: center;
+    padding: 32px 20px 24px;
+    background: linear-gradient(160deg, #EFF6FF 0%, #F5F3FF 100%);
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    border: 1px solid var(--border-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+  .guide-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+  }
+  .guide-hero .logo-box {
+    width: 84px; height: 84px; margin: 0 auto 14px;
+    border-radius: 22px; background: white;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(30,58,138,0.15);
+    position: relative;
+    z-index: 1;
+  }
+  .guide-hero .logo-box img { width: 56px; height: 56px; }
+  .guide-hero h1 { font-size: 26px; color: var(--primary); font-weight: 800; margin-bottom: 6px; position: relative; z-index: 1;}
+  .guide-hero p { font-size: 14px; color: var(--text-muted); position: relative; z-index: 1;}
+  
+  .guide-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    scrollbar-width: none;
+  }
+  .guide-tabs::-webkit-scrollbar { display: none; }
+  
+  .guide-tab {
+    padding: 10px 18px;
+    border-radius: 20px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-subtle);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+  }
+  .guide-tab.active {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+  }
+  
+  .guide-content-section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .guide-content-section.active {
+    display: block;
+  }
+  
+  .guide-accordion {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .guide-acc-header {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .guide-acc-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--primary-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .guide-acc-title {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+  .guide-acc-arrow {
+    color: var(--text-faint);
+    transition: transform 0.3s;
+  }
+  
+  .guide-acc-body {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  
+  .guide-accordion.open {
+    border-color: var(--primary-light);
+  }
+  .guide-accordion.open .guide-acc-arrow {
+    transform: rotate(180deg);
+    color: var(--primary-light);
+  }
+  .guide-accordion.open .guide-acc-body {
+    padding: 0 18px 18px 18px;
+    max-height: 4000px;
+  }
+  
+  .guide-acc-body ul {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+  .guide-acc-body li {
+    margin-bottom: 6px;
+  }
+  .guide-acc-body li::marker { color: var(--primary-light); }
+  .guide-acc-body code {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+  
+  .tip-box {
+    background: #D1FAE5; border: 1.5px solid #A7F3D0;
+    border-radius: var(--radius-md); padding: 16px;
+    margin: 16px 0; display: flex; gap: 12px;
+  }
+  .tip-box .icon { font-size: 24px; flex-shrink: 0; }
+  .tip-box h4 { font-size: 14px; color: #065F46; font-weight: 700; margin-bottom: 4px; }
+  .tip-box p { font-size: 13px; color: #064E3B; line-height: 1.6; }
+
+  .warning-box {
+    background: #FEF3C7; border: 1.5px solid #FDE68A;
+    border-radius: var(--radius-md); padding: 16px;
+    margin: 16px 0; display: flex; gap: 12px;
+  }
+  .warning-box .icon { font-size: 24px; flex-shrink: 0; }
+  .warning-box h4 { font-size: 14px; color: #92400E; font-weight: 700; margin-bottom: 4px; }
+  .warning-box p { font-size: 13px; color: #78350F; line-height: 1.6; }
+
+  .action-btn-group {
+    display: flex; gap: 10px; margin-top: 15px;
+  }
+  .action-btn {
+    flex: 1; padding: 12px; border-radius: var(--radius-sm);
+    text-align: center; text-decoration: none;
+    font-size: 14px; font-weight: 700;
+    transition: 0.2s;
+  }
+  .btn-primary-action { background: var(--primary-gradient); color: white; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+  .btn-primary-action:hover { transform: translateY(-2px); }
+  .btn-secondary-action { background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-subtle); }
+  .btn-secondary-action:hover { background: var(--border-subtle); }
+
+  @media print {
+    .header, .guide-tabs, .no-print { display: none !important; }
+    body { background: white !important; }
+    .guide-content-section { display: block !important; opacity: 1 !important; }
+    .guide-acc-body { max-height: none !important; padding: 0 18px 18px 18px !important; overflow: visible !important; }
+    .guide-accordion { page-break-inside: avoid; box-shadow: none !important; border: 1px solid #ccc !important; }
+  }
+
+  body.dark-mode .guide-hero { background: linear-gradient(160deg, #1E293B 0%, #1E1B4B 100%); }
+  body.dark-mode .guide-hero .logo-box { background: #0F172A; }
+  body.dark-mode .guide-acc-icon { background: #1E3A8A; }
+  body.dark-mode .tip-box { background: #022c22; border-color: #065f46; }
+  body.dark-mode .tip-box h4, body.dark-mode .tip-box p { color: #6EE7B7; }
+  body.dark-mode .warning-box { background: #422006; border-color: #92400E; }
+  body.dark-mode .warning-box h4, body.dark-mode .warning-box p { color: #FCD34D; }
+  
+  body.amoled-mode .guide-hero { background: linear-gradient(160deg, #000000 0%, #042F2E 100%); border-color: #333; }
+  body.amoled-mode .guide-hero .logo-box { background: #111111; }
+  body.amoled-mode .guide-accordion { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .guide-acc-icon { background: #042F2E; color: #5EEAD4; }
+  body.amoled-mode .guide-tab { background: #111111; border-color: #333; }
+  body.amoled-mode .guide-tab.active { background: var(--primary-gradient); border-color: transparent; color: #000; }
+  body.amoled-mode .tip-box { background: #042F2E; border-color: #0F766E; }
+  body.amoled-mode .tip-box h4, body.amoled-mode .tip-box p { color: #5EEAD4; }
+  body.amoled-mode .warning-box { background: #271A00; border-color: #78350F; }
+  body.amoled-mode .warning-box h4, body.amoled-mode .warning-box p { color: #FCD34D; }
+
+  /* ============ AI Chatbot Styles ============ */
+  .chat-toggle-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+    color: white;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(30, 58, 138, 0.4);
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+  }
+  .chat-toggle-btn:hover { transform: scale(1.08); }
+
+  .chat-window {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    width: 350px;
+    max-width: calc(100vw - 40px);
+    height: 500px;
+    max-height: 70vh;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2);
+    z-index: 1500;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #E2E8F0;
+  }
+  .chat-window.open { display: flex; }
+
+  .chat-header {
+    background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+    color: white;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .chat-header .icon { font-size: 22px; }
+  .chat-header .title { flex: 1; font-weight: 700; font-size: 14px; }
+  .chat-header .close-x {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  .chat-bubble.bot {
+    background: white;
+    color: #1E293B;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .chat-bubble.user {
+    background: #3B82F6;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+
+  /* Typing Indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 12px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    max-width: 60px;
+  }
+  .typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #94A3B8;
+    animation: typingBounce 1.4s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(1) { animation-delay: 0s; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  .chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 14px;
+    background: white;
+    border-top: 1px solid #E2E8F0;
+  }
+  .chat-suggestion-btn {
+    background: #EFF6FF;
+    color: #1E40AF;
+    border: 1px solid #BFDBFE;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 11.5px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .chat-suggestion-btn:hover { background: #DBEAFE; }
+
+  .chat-input-wrap {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-top: 1px solid #E2E8F0;
+    background: white;
+  }
+  .chat-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 20px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+  }
+  .chat-input:focus { border-color: #3B82F6; }
+  .chat-send-btn {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .chat-send-btn:hover { background: #2563EB; }
+
+  body.dark-mode .chat-window { background: #1E293B; border-color: #334155; }
+  body.dark-mode .chat-body { background: #0F172A; }
+  body.dark-mode .chat-bubble.bot { background: #1E293B; color: #F1F5F9; }
+  body.dark-mode .typing-indicator { background: #1E293B; }
+  body.dark-mode .typing-dot { background: #64748B; }
+  body.dark-mode .chat-suggestions { background: #1E293B; border-color: #334155; }
+  body.dark-mode .chat-suggestion-btn { background: #1E3A8A; color: #BFDBFE; border-color: #3B82F6; }
+  body.dark-mode .chat-input-wrap { background: #1E293B; border-color: #334155; }
+  body.dark-mode .chat-input { background: #0F172A; color: #F1F5F9; border-color: #475569; }
+
+  body.amoled-mode .chat-window { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .chat-body { background: #000; }
+  body.amoled-mode .chat-bubble.bot { background: #111; color: #FFF; }
+  body.amoled-mode .typing-indicator { background: #111; }
+  body.amoled-mode .typing-dot { background: #52525B; }
+  body.amoled-mode .chat-suggestions { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .chat-suggestion-btn { background: #042F2E; color: #5EEAD4; border-color: #14B8A6; }
+  body.amoled-mode .chat-input-wrap { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .chat-input { background: #000; color: #FFF; border-color: #333; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+    <h1>📖 ইউজার গাইড</h1>
+    <button class="header-icon-btn no-print" onclick="window.print()" title="PDF সেভ করুন">🖨️</button>
+  </div>
+
+  <div class="screen">
+    
+    <div class="guide-hero">
+      <div class="logo-box">
+        <img src="icon-192.png" alt="লিখিপাতা" onerror="this.style.display='none'; this.parentElement.innerHTML='📚'; this.parentElement.style.fontSize='42px';">
+      </div>
+      <h1>লিখিপাতা</h1>
+      <p>আপনার ডেটা, আপনার নিয়মে — সম্পূর্ণ গাইড</p>
+    </div>
+
+    <div class="guide-tabs">
+      <button class="guide-tab active" onclick="switchGuideTab('tab-basic', this)">🚀 বেসিক</button>
+      <button class="guide-tab" onclick="switchGuideTab('tab-fields', this)">📝 ফিল্ডস</button>
+      <button class="guide-tab" onclick="switchGuideTab('tab-formula', this)">🧮 ফর্মুলা ও লুকআপ</button>
+      <button class="guide-tab" onclick="switchGuideTab('tab-sync', this)">☁️ ব্যাকআপ ও সিঙ্ক</button>
+      <button class="guide-tab" onclick="switchGuideTab('tab-advanced', this)">⭐ অ্যাডভান্সড</button>
+      <button class="guide-tab" onclick="switchGuideTab('tab-tips', this)">💡 টিপস</button>
+    </div>
+
+    <!-- ==========================================
+         TAB 1: BASIC
+         ========================================== -->
+    <div id="tab-basic" class="guide-content-section active">
+      
+      <div class="guide-accordion open">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">১</div>
+          <div class="guide-acc-title">নতুন বুক তৈরি করুন</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>আপনার সব ডেটা "বুক"-এর ভেতরে থাকে। যেমন: "দৈনিক খরচ", "ব্যবসার হিসাব", বা "ছাত্রদের তালিকা"।</p>
+          <ul>
+            <li>হোম স্ক্রিনে <b>➕ নতুন বুক তৈরি করুন</b> বাটনে ক্লিক করুন।</li>
+            <li>বুকের নাম দিন, একটি সুন্দর আইকন ও রঙ নির্বাচন করুন।</li>
+            <li>বুকের ধরন নির্বাচন করুন: <b>📘 সাধারণ বুক</b> অথবা <b>📊 ড্যাশবোর্ড বুক</b>।</li>
+            <li>সেভ করুন।</li>
+          </ul>
+          <div class="tip-box" style="margin-top:12px;">
+            <div class="icon">💡</div>
+            <div>
+              <h4>বুকের ধরন কী?</h4>
+              <p><b>সাধারণ বুক:</b> এখানে ফিল্ড ও এন্ট্রি তৈরি করে ডেটা সংরক্ষণ করবেন।<br>
+              <b>ড্যাশবোর্ড বুক:</b> এখানে আলাদা কোনো এন্ট্রি নেই। বরং অন্য বুকের সামারি কার্ডগুলো এক জায়গায় দেখতে পাবেন।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">২</div>
+          <div class="guide-acc-title">ফিল্ড তৈরি করুন</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>বুকের ভেতরে কী কী তথ্য থাকবে তা "ফিল্ড" দ্বারা নির্ধারণ করবেন। বুক কার্ডে <b>✏️ এডিট</b> বাটনে ক্লিক করে বিল্ডারে যান।</p>
+          <p>বিল্ডারে ফিল্ডের ধরন: টেক্সট, নাম্বার, তারিখ, ড্রপডাউন, চেকবক্স, ফর্মুলা ও লুকআপ।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">৩</div>
+          <div class="guide-acc-title">এন্ট্রি যোগ করুন</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>ফিল্ড তৈরি হলে ফর্ম ট্যাবে গিয়ে ডেটা লিখুন। <b>💾 সেভ করুন</b> ক্লিক করলেই ডেটা টেবিলে চলে যাবে।</p>
+          <ul>
+            <li>ভুল হলে টেবিলে ক্লিক করে এডিট বা ডিলিট করতে পারবেন।</li>
+            <li>ডিলিট করা ডেটা চাইলে রিসাইকেল বিন থেকে ফিরিয়ে আনতে পারবেন।</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">৪</div>
+          <div class="guide-acc-title">ড্যাশবোর্ড বুক (নতুন)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>ড্যাশবোর্ড বুক তৈরি করলে আপনি অন্য বুকের সামারি কার্ডগুলোকে এক জায়গায় দেখতে পাবেন। এই বুকের ভেতরে কোনো এন্ট্রি থাকবে না।</p>
+          <ul>
+            <li>নতুন বুক তৈরি করার সময় <b>📊 ড্যাশবোর্ড বুক</b> সিলেক্ট করুন।</li>
+            <li>বুক তৈরি হলে সেটার <b>✏️ এডিট</b> বাটনে ক্লিক করে বিল্ডারে যান।</li>
+            <li>সেখানে <b>"➕ নতুন ড্যাশবোর্ড কার্ড যোগ করুন"</b> বাটনে ক্লিক করুন।</li>
+            <li>উৎস বুক সিলেক্ট করুন → কোন সামারি কার্ড দেখাবে তা সিলেক্ট করুন → রঙ দিন → সেভ করুন।</li>
+            <li>এখন ভিউ পেজে ঢুকলে সামারি কার্ডগুলো রঙিন বক্সে দেখতে পাবেন।</li>
+          </ul>
+          <div class="tip-box" style="margin-top:12px;">
+            <div class="icon">🎯</div>
+            <div>
+              <h4>ব্যবহারের উদাহরণ</h4>
+              <p>ধরুন আপনার ২টি ডোকান আছে— "ডোকান ১" ও "ডোকান ২"। দুটো ডোকানে বিক্রি আলাদা বুক ট্র্যাক করেন। এখন একটি ড্যাশবোর্ড বুক তৈরি করে দুই ডোকানের "মোট বিক্রি" একসাথে দেখতে পারবেন।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         TAB 2: FIELDS
+         ========================================== -->
+    <div id="tab-fields" class="guide-content-section">
+      
+      <div class="guide-accordion open">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">📝</div>
+          <div class="guide-acc-title">টেক্সট (Text)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>নাম, ঠিকানা, বিবরণ বা যেকোনো লেখার জন্য ব্যবহার করুন। এই ফিল্ডে আপনি লিখতে পারবেন এবং লেখা বড় হলে বক্সটি অটোমেটিক বড় হবে।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">🔢</div>
+          <div class="guide-acc-title">নাম্বার (Number)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>দাম, পরিমাণ বা যেকোনো সংখ্যার জন্য। এখানে আপনি সরাসরি হিসাবও লিখতে পারবেন, যেমন: <code>100 + 50 * 2</code> লিখে পাশের <b>=</b> বাটনে ক্লিক করলে এটি নিজেই ফলাফল বের করবে।</p>
+          <div class="tip-box" style="margin-top:10px;">
+            <div class="icon">🕘</div>
+            <div>
+              <h4>হিসাবের ইতিহাস</h4>
+              <p>একটি নাম্বার ফিল্ডে হিসাব করলে (যেমন: <code>50+50</code>) পাশে 🕘 আইকন দেখাবে। ক্লিক করলে সর্বশেষ হিসাবের পূর্ণ বিবরণ দেখতে পাবেন।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">📅</div>
+          <div class="guide-acc-title">তারিখ (Date)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>দিন-তারিখ সংরক্ষণের জন্য। এখানে একটি ক্যালেন্ডার পপ-আপ আসবে, যা থেকে সহজেই তারিখ বাছাই করা যাবে।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">📋</div>
+          <div class="guide-acc-title">ড্রপডাউন (Dropdown)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>আগে থেকে ঠিক করা অপশন থেকে একটি বেছে নেওয়ার জন্য। যেমন: "বাজার", "বিল", "যাতায়াত" — ইউজারকে বানান লিখতে হবে না, শুধু ট্যাপ করে বেছে নেবে।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">☑️</div>
+          <div class="guide-acc-title">চেকবক্স (Checkbox)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>শুধু "হ্যাঁ" বা "না" বোঝানোর জন্য। যেমন: "টাকা কি পরিশোধ হয়েছে?" ট্যাপ করলেই হ্যাঁ/না সিলেক্ট হবে।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">📏</div>
+          <div class="guide-acc-title">কলামের প্রস্থ (Column Width)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>বিল্ডারে ফিল্ড তৈরি করার সময় <b>"📏 টেবিলে কলামের প্রস্থ"</b> অপশনে ৪টি সাইজ বেছে নিতে পারবেন:</p>
+          <ul>
+            <li><b>ছোট:</b> চেকবক্স, ছোট সংখ্যা</li>
+            <li><b>মাঝারি:</b> ডিফল্ট সাইজ</li>
+            <li><b>বড়:</b> টেক্সট বা লম্বা নাম</li>
+            <li><b>খুব বড়:</b> মন্তব্য বা ঠিকানা</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         TAB 3: FORMULA & LOOKUP
+         ========================================== -->
+    <div id="tab-formula" class="guide-content-section">
+      
+      <div class="tip-box">
+        <div class="icon">🧮</div>
+        <div>
+          <h4>ফর্মুলা কী?</h4>
+          <p>ফর্মুলা হলো এক ধরনের অটো-ক্যালকুলেটর। অন্য ফিল্ডের মান বসিয়ে আপনি নিজে থেকেই হিসাব করে নিতে পারবেন।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion open">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">➕</div>
+          <div class="guide-acc-title">ফর্মুলা তৈরি করা</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>ফিল্ড তৈরির সময় "ফর্মুলা" টাইপ সিলেক্ট করুন। নিচে বাটনগুলো থাকবে—</p>
+          <ul>
+            <li>আপনি যে ফিল্ডগুলো ব্যবহার করতে চান সেগুলোর নামে ট্যাপ করুন।</li>
+            <li>তারপর <b>+ − × ÷</b> দিয়ে হিসাব লিখুন।</li>
+          </ul>
+          <p>যেমন: <code>মূল্য × পরিমাণ</code></p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">⚙️</div>
+          <div class="guide-acc-title">উন্নত ফাংশন (sum, avg, max)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>শুধু যোগ-বিয়োগ নয়, আপনি চাইলে উন্নত ফাংশনও ব্যবহার করতে পারবেন:</p>
+          <ul>
+            <li><code>sum(আয়, বোনাস)</code> → একাধিক সংখ্যা যোগ</li>
+            <li><code>avg(মার্ক১, মার্ক২)</code> → গড় বের করা</li>
+            <li><code>max(সংখ্যা১, সংখ্যা২)</code> → বড় সংখ্যা বের করা</li>
+            <li><code>min(সংখ্যা১, সংখ্যা২)</code> → ছোট সংখ্যা বের করা</li>
+            <li><code>round(সংখ্যা)</code> → দশমিক বাদ দেওয়া</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">🔗</div>
+          <div class="guide-acc-title">লুকআপ (Lookup) — এক বুক থেকে অন্য বুকের ডেটা</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>ধরুন, আপনার একটি বুক আছে "কাস্টমার লিস্ট", আরেকটি বুক "বিক্রি"। বিক্রি বইয়ে আপনি চাইবেন কাস্টমারের নাম অটোমেটিক আসুক। একেই লুকআপ বলে।</p>
+          <ul>
+            <li>"লুকআপ" ফিল্ড তৈরি করুন।</li>
+            <li>"উৎস বুক" হিসেবে কাস্টমার লিস্ট নির্বাচন করুন।</li>
+            <li>কোন ফিল্ডের মান দেখাবে তা সিলেক্ট করুন (যেমন: কাস্টমারের নাম)।</li>
+            <li>এখন বিক্রি বইয়ে এন্ট্রি দিলে ড্রপডাউনে সব কাস্টমার দেখাবে।</li>
+          </ul>
+          <div class="tip-box" style="margin-top:12px;">
+            <div class="icon">⭐</div>
+            <div>
+              <h4>আরও জানতে চান?</h4>
+              <p>লুকআপের <b>অটো-ম্যাচ</b> ও <b>লাইভ লিংক</b>-এর মতো অ্যাডভান্সড অপশন সম্পর্কে জানতে <b>⭐ অ্যাডভান্সড</b> ট্যাবে যান।</p>
+            </div>
+          </div>   
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+         TAB 4: BACKUP & SYNC
+         ========================================== -->
+    <div id="tab-sync" class="guide-content-section">
+      
+      <div class="warning-box">
+        <div class="icon">⚠️</div>
+        <div>
+          <h4>সতর্কতা: ডেটা ব্যাকআপ</h4>
+          <p>আপনার ডেটা শুধু এই ফোনে সেভ থাকে। ফোন হারালে বা ব্রাউজার ক্লিয়ার করলে ডেটা মুছে যেতে পারে। তাই সপ্তাহে অন্তত একবার ব্যাকআপ নিন।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion open">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">💾</div>
+          <div class="guide-acc-title">লোকাল ব্যাকআপ (JSON)</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>মেনু থেকে <b>ব্যাকআপ ডাউনলোড</b> ক্লিক করলে একটি ফাইল ডাউনলোড হবে। এই ফাইলটি আপনার ফোনের ফাইল ম্যানেজারে বা Google Drive-এ রাখতে পারেন।</p>
+          <p>পরবর্তীতে <b>ব্যাকআপ রিস্টোর</b> থেকে সেই ফাইল আপলোড করলেই সব ডেটা ফিরে আসবে।</p>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">☁️</div>
+          <div class="guide-acc-title">গুগল ড্রাইভ সিঙ্ক</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>মেনুতে <b>গুগল ড্রাইভ সিঙ্ক</b> অপশনটি থাকবে। এখানে গুগল অ্যাকাউন্টে সাইন-ইন করলে আপনার ডেটা গুগলের সার্ভারে অটো-সেভ হবে।</p>
+          <ul>
+            <li><b>অটো সিঙ্ক:</b> ডেটা পরিবর্তন হলে নিজে থেকেই সিঙ্ক হবে।</li>
+            <li><b>ম্যানুয়াল সিঙ্ক:</b> হোম স্ক্রিনে থাকা সিঙ্ক বাটনে ক্লিক করে যেকোনো সময় সিঙ্ক করতে পারবেন।</li>
+            <li><b>রিস্টোর:</b> অন্য ফোন থেকে ডেটা আনতে চাইলে ড্রাইভ থেকে রিস্টোর করুন।</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="guide-accordion">
+        <div class="guide-acc-header" onclick="toggleAccordion(this)">
+          <div class="guide-acc-icon">📥</div>
+          <div class="guide-acc-title">CSV / Excel ইমপোর্ট</div>
+          <div class="guide-acc-arrow">▼</div>
+        </div>
+        <div class="guide-acc-body">
+          <p>Statistics ট্যাবে গিয়ে <b>📤 ইমপোর্ট</b> ক্লিক করুন। সেখান থেকে CSV বা Excel ফাইল আপলোড করে সহজেই শত শত এন্ট্রি একসাথে যোগ করতে পারবেন।</p>
+          <ul>
+            <li>Excel ফাইলে একাধিক শিট থাকলে কোনটি ব্যবহার করবেন তা বেছে নিতে পারবেন।</li>
+            <li>কলাম ম্যাপিং ঠিক করুন।</li>
+            <li><code>_id</code> কলাম থাকলে পুরোনো এন্ট্রি আপডেট হবে, না থাকলে নতুন যোগ হবে।</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==========================================
+     TAB 5: ADVANCED FEATURES
+     ========================================== -->
+<div id="tab-advanced" class="guide-content-section">
+
+  <div class="tip-box">
+    <div class="icon">⭐</div>
+    <div>
+      <h4>এই ট্যাবে কী আছে?</h4>
+      <p>অ্যাপের নতুন সব অ্যাডভান্সড ফিচার— লুকআপ (এক বুক থেকে অন্য বুক), সামারি কার্ড, চার্ট, কপি-পেস্ট এন্ট্রি, আনডু-রিডু, গ্লোবাল সার্চ ইত্যাদি।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion open">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🔗</div>
+      <div class="guide-acc-title">লুকআপ (Lookup) — অ্যাডভান্সড অপশন</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>লুকআপ ফিল্ডের মাধ্যমে এক বুকের ডেটা অন্য বুক থেকে আনা যায়। এখানে এর <b>দুটি অ্যাডভান্সড মোড</b> ব্যাখ্যা করা হলো:</p>
+      <ul>
+        <li><b>⚡ অটো-ম্যাচ মোড:</b> এই বুকের অন্য একটি ফিল্ডের মানের সাথে উৎস বুকের মান মিলিয়ে ডেটা অটোমেটিক বসে যাবে। যেমন— আপনি "কাস্টমার আইডি" লিখলেন, অটোমেটিক "কাস্টমারের নাম" বসে গেল।</li>
+        <li><b>🔄 লাইভ লিংক:</b> এই অপশন চালু থাকলে উৎস বুকের ডেটা পরিবর্তন হলে এই বুকেও অটো আপডেট হবে।
+          <br><b>⚠️ সতর্কতা:</b> ইনভয়েস বা রিসিটের জন্য এটি <b>বন্ধ রাখাই ভালো</b> — নাহলে পুরোনো এন্ট্রির মানও পরিবর্তন হয়ে যাবে এবং রেকর্ড নষ্ট হবে।</li>
+        <li><b>🧩 সার্কুলার রেফারেন্স চেক:</b> অ্যাপ স্বয়ংক্রিয়ভাবে চেক করে যে দুই বুক একে অপরকে রেফার করছে কিনা (যা অসীম লুপ তৈরি করতে পারে)।</li>
+        <li><b>❌ ব্রোকেন লুকআপ:</b> উৎস ফিল্ড ডিলিট হয়ে গেলে লুকআপ ভেঙে যায় এবং একটি সতর্কবার্তা দেখায়। বিল্ডার থেকে ঠিক করা যায়।</li>
+        <li><b>✅ ফর্মুলা ফিল্ড সাপোর্ট:</b> লুকআপে এখন উৎস বুকের ফর্মুলা ফিল্ডও সিলেক্ট করা যাবে।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📊</div>
+      <div class="guide-acc-title">সামারি কার্ড (Statistics Cards)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>বিল্ডারের নিচের দিকে <b>"Statistics সামারি কার্ড"</b> সেকশন আছে। এখানে আপনি রঙিন কার্ড তৈরি করতে পারবেন।</p>
+      <ul>
+        <li>"➕ নতুন সামারি কার্ড যোগ করুন" ক্লিক করুন।</li>
+        <li>কার্ডের নাম দিন (যেমন: <b>"মোট খরচ"</b>, <b>"সর্বোচ্চ মূল্য"</b>)।</li>
+        <li>কোন ফিল্ডের উপর হিসাব হবে তা সিলেক্ট করুন।</li>
+        <li>হিসাবের ধরন বেছে নিন: <b>যোগফল, সংখ্যা, গড়, সর্বোচ্চ, সর্বনিম্ন</b>।</li>
+        <li>কার্ডের রঙ বেছে নিন।</li>
+      </ul>
+      <p>ভিউ পেজের <b>Statistics ট্যাবে</b> গেলেই এই রঙিন কার্ডগুলোতে হিসাব করা মান দেখতে পাবেন।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📈</div>
+      <div class="guide-acc-title">চার্ট সেকশন (Chart Sections)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>একাধিক ফিল্ডকে একত্রিত করে আপনি কাস্টম চার্ট সেকশন তৈরি করতে পারেন।</p>
+      <ul>
+        <li>বিল্ডারে <b>"➕ নতুন চার্ট সেকশন যোগ করুন"</b> ক্লিক করুন।</li>
+        <li>সেকশনের নাম দিন (যেমন: <b>"আয়ের সোর্স"</b>, <b>"খরচের সারাংশ"</b>)।</li>
+        <li>যে ফিল্ডগুলো এই সেকশনে থাকবে সেগুলো চেকবক্স দিয়ে সিলেক্ট করুন।</li>
+      </ul>
+      <p>ভিউ পেজের Statistics ট্যাবে <b>📊 চার্ট বাটনে</b> ক্লিক করলে এই সেকশন অনুযায়ী সুন্দর গ্রাফ দেখতে পাবেন। উপরে থেকে <b>দিন, মাস, বছর</b> ফিল্টার করেও চার্ট দেখা যায়।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📋</div>
+      <div class="guide-acc-title">এক বুক থেকে অন্য বুকের এন্ট্রি কপি</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>ধরুন, আপনার দুইটি বুক আছে, কিন্তু দুটোর ফিল্ডের নাম একই। আপনি একটি বুক থেকে ডেটা কপি করে অন্যটিতে পেস্ট করতে পারবেন।</p>
+      <ul>
+        <li>Statistics ট্যাবে যেকোনো এন্ট্রির ডান পাশে <b>📋 কপি</b> বাটনে ক্লিক করুন।</li>
+        <li>অন্য বুকের ফর্ম ট্যাবে গেলে উপরে একটি <b>সাজেশন</b> দেখাবে।</li>
+        <li><b>"পেস্ট"</b> ক্লিক করলেই ডেটা অটোমেটিক ঘরে বসে যাবে।</li>
+      </ul>
+      <p>ফিল্ডের নাম না মিললে সেই ফিল্ড বাদ যাবে এবং মেসেজ দেখাবে।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">↩️</div>
+      <div class="guide-acc-title">আনডু ও রিডু (Undo / Redo)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>ভুল করে কিছু ডিলিট বা এডিট করে ফেললে সাথে সাথে ফিরিয়ে আনা যাবে।</p>
+      <ul>
+        <li><b>বিল্ডারে:</b> হেডারে <b>↶ আনডু</b> ও <b>↷ রিডু</b> বাটন আছে। ফিল্ড, সামারি কার্ড বা চার্ট সেকশনে পরিবর্তন করলে এই বাটনগুলো সক্রিয় হয়।</li>
+        <li><b>ভিউ পেজে:</b> ফর্ম পূরণ করার সময়ও হেডারে আনডু-রিডু বাটন থাকে। ভুল টাইপ হলে ফিরিয়ে আনা যাবে।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📥</div>
+      <div class="guide-acc-title">CSV / Excel ইমপোর্ট ও এক্সপোর্ট</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p><b>এক্সপোর্ট:</b> Statistics ট্যাবে <b>📥 এক্সপোর্ট</b> বাটনে ক্লিক করলে তিনটি অপশন পাবেন—</p>
+      <ul>
+        <li><b>CSV:</b> সাধারণ স্প্রেডশিট ফাইল।</li>
+        <li><b>Excel (XLSX):</b> শিট সহ, কলামের প্রস্থ ও ফরম্যাট ঠিক থাকে। এখানে <code>_id</code> নামে একটি গোপন কলাম থাকে।</li>
+        <li><b>PDF:</b> প্রিন্টের জন্য।</li>
+      </ul>
+      <p><b>ইমপোর্ট:</b> Statistics ট্যাবে <b>📤 ইমপোর্ট</b> বাটনে ক্লিক করুন।</p>
+      <ul>
+        <li>CSV বা Excel ফাইল আপলোড করুন।</li>
+        <li>Excel ফাইলে একাধিক শিট থাকলে কোনটি ব্যবহার করবেন তা বেছে নিতে পারবেন।</li>
+        <li>কলাম ম্যাপিং ঠিক করুন— CSV-এর কোন কলাম আপনার বুকের কোন ফিল্ডে যাবে।</li>
+        <li>প্রিভিউ দেখে নিশ্চিত হয়ে <b>"📥 ইমপোর্ট করুন"</b> ক্লিক করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🔍</div>
+      <div class="guide-acc-title">গ্লোবাল সার্চ (Global Search)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>হোম স্ক্রিনের উপরে একটি সার্চ বার আছে। এখানে বুকের নাম বা ভেতরের কোনো এন্ট্রির ডেটা (যেমন কাস্টমারের নাম, ফোন নাম্বার) লিখে সার্চ করলে সরাসরি সেই বুকটি খুঁজে পাবেন। কতটি এন্ট্রি মিলেছে তাও দেখাবে।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">☁️</div>
+      <div class="guide-acc-title">গুগল ড্রাইভ অটো-সিঙ্কের স্মার্ট ফিচার</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <ul>
+        <li><b>অটো-সিঙ্ক:</b> ডেটা পরিবর্তনের ৩ সেকেন্ড পর নিজে থেকেই সিঙ্ক হবে।</li>
+        <li><b>টম্বস্টোন (Tombstone):</b> এক ফোনে ডেটা ডিলিট করলে অন্য ফোনে সেটি ফিরে আসবে না।</li>
+        <li><b>টাইমস্ট্যাম্প কনফ্লিক্ট:</b> দুই ফোনে একই ডেটা থাকলে যে ডেটা নতুন সেটি জিতবে।</li>
+        <li><b>সাইলেন্ট রিফ্রেশ:</b> গুগলের টোকেন এক্সপায়ার হলেও ব্যাকগ্রাউন্ডে অটো রিফ্রেশ হয়।</li>
+        <li><b>প্রথম লগইনে অপশন:</b> প্রথমবার সাইন-ইন করলে জিজ্ঞেস করবে— "মিলিয়ে নেবেন (Merge)" নাকি "রিপ্লেস করবেন"।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📋</div>
+      <div class="guide-acc-title">ক্লিপবোর্ড সাজেশন (Clipboard Suggestion)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>কোনো এন্ট্রি কপি করার পর অন্য বুকের ফর্মে গেলে স্বয়ংক্রিয়ভাবে একটি নীল রঙের সাজেশন কার্ড দেখাবে। সেখানে কপি করা ডেটার বুকের নাম ও কতটি ফিল্ড পেস্ট হবে তা দেখাবে।</p>
+      <ul>
+        <li><b>পেস্ট:</b> ক্লিক করলে ফর্মে ডেটা বসে যাবে।</li>
+        <li><b>✕:</b> ক্লিক করলে এই সেশনে আর দেখাবে না।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🎨</div>
+      <div class="guide-acc-title">থিম (Light / Dark / AMOLED)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>মেনু থেকে <b>"থিম পরিবর্তন"</b> ক্লিক করলে তিনটি অপশন পাবেন:</p>
+      <ul>
+        <li><b>☀️ লাইট:</b> দিনের আলোর জন্য সাদা থিম।</li>
+        <li><b>🌙 ডার্ক:</b> রাতের জন্য নীলচে গাঢ় থিম।</li>
+        <li><b>🌑 AMOLED:</b> একদম কালো থিম— চোখের জন্য আরামদায়ক এবং ব্যাটারি বাঁচায়।</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<!-- END TAB 5 -->
+    
+    <!-- ==========================================
+     TAB 6: TIPS, TRICKS & TROUBLESHOOTING
+     ========================================== -->
+<div id="tab-tips" class="guide-content-section">
+
+  <div class="tip-box">
+    <div class="icon">💡</div>
+    <div>
+      <h4>এই ট্যাবে কী আছে?</h4>
+      <p>অ্যাপটি আরও দ্রুত ও নিরাপদভাবে ব্যবহার করার কিছু দরকারি টিপস, শর্টকাট, সমস্যা সমাধানের উপায় এবং ডেটা সুরক্ষার পরামর্শ।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion open">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📱</div>
+      <div class="guide-acc-title">অ্যাপটি হোম স্ক্রিনে ইনস্টল করুন</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>লিখিপাতা একটি PWA (Progressive Web App)। এটি ইনস্টল করলে ইন্টারনেট ছাড়াই নেটিভ অ্যাপের মতো কাজ করবে।</p>
+      <ul>
+        <li><b>Android (Chrome):</b> ব্রাউজারের ডান দিকের ⋮ মেনু থেকে <b>"Install app"</b> ক্লিক করুন।</li>
+        <li><b>iPhone (Safari):</b> নিচের Share বাটনে ক্লিক করে <b>"Add to Home Screen"</b> নির্বাচন করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">⌨️</div>
+      <div class="guide-acc-title">দ্রুত ডেটা এন্ট্রির কৌশল</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <ul>
+        <li><b>Enter চাপুন:</b> মোবাইল কিবোর্ডে Enter চাপলে কার্সর অটোমেটিক পরের ঘরে চলে যাবে।</li>
+        <li><b>ডিফল্ট মান সেট করুন:</b> বিল্ডারে ফিল্ড তৈরির সময় "ডিফল্ট মান" দিন।</li>
+        <li><b>ড্রপডাউন ব্যবহার করুন:</b> বারবার একই শব্দ লিখতে হলে সেটিকে ড্রপডাউন ফিল্ড বানিয়ে নিন।</li>
+        <li><b>ফর্মুলা ব্যবহার করুন:</b> হাতে হিসাব না করে ফর্মুলা ফিল্ড ব্যবহার করুন।</li>
+        <li><b>কপি-পেস্ট:</b> একই ধরনের এন্ট্রি বারবার হলে আগের এন্ট্রির 📋 কপি বাটনে ক্লিক করে পেস্ট করে নিন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">💾</div>
+      <div class="guide-acc-title">অটো-সেভ ড্রাফট (Draft)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>আপনি যদি ফর্ম পূরণ করতে করতে ভুলে পেজ বন্ধ করে ফেলেন বা ফোন হ্যাং হয়ে যায়— চিন্তা নেই!</p>
+      <ul>
+        <li>ফর্মের ডেটা অটোমেটিক ড্রাফট হিসেবে সেভ থাকে।</li>
+        <li>পরবর্তীবার একই বুকের ফর্ম খুললে আপনার আগের লেখা ডেটা ফিরে আসবে।</li>
+        <li>"সেভ করুন" বা "বাতিল" ক্লিক করলে ড্রাফট ক্লিয়ার হয়ে যাবে।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🗑️</div>
+      <div class="guide-acc-title">রিসাইকেল বিন — ভুলে ডিলিট হলে</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>ভুলে বুক বা এন্ট্রি ডিলিট করে ফেললেও তা সাথে সাথে স্থায়ীভাবে মুছে যায় না।</p>
+      <ul>
+        <li>মেনু থেকে <b>রিসাইকেল বিন</b>-এ যান।</li>
+        <li>সেখানে ডিলিট করা সব বুক ও এন্ট্রি তারিখসহ জমা থাকে।</li>
+        <li>যেটা ফিরিয়ে আনতে চান তার পাশে <b>↩️ রিস্টোর</b> ক্লিক করুন।</li>
+        <li>স্থায়ীভাবে মুছতে চাইলে <b>স্থায়ীভাবে মুছুন</b> ক্লিক করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🛡️</div>
+      <div class="guide-acc-title">ডেটা সুরক্ষার ৫টি সোনার নিয়ম</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <ul>
+        <li><b>সপ্তাহে একবার JSON ব্যাকআপ নিন:</b> মেনু → ব্যাকআপ ডাউনলোড।</li>
+        <li><b>গুগল ড্রাইভ সিঙ্ক চালু রাখুন:</b> এটি সবচেয়ে নিরাপদ উপায়।</li>
+        <li><b>গুরুত্বপূর্ণ ডেটা PDF করে রাখুন:</b> Statistics ট্যাব থেকে PDF এক্সপোর্ট করুন।</li>
+        <li><b>ব্রাউজার ডেটা ক্লিয়ার করবেন না:</b> IndexedDB-তে থাকা ডেটাও মুছে যেতে পারে।</li>
+        <li><b>প্রাইভেট/ইনকগনিটো মোডে ব্যবহার করবেন না।</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">📲</div>
+      <div class="guide-acc-title">একাধিক ফোনে ব্যবহার</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>একই গুগল অ্যাকাউন্টে সাইন-ইন করে আপনি একাধিক ফোন বা ট্যাবে একই ডেটা ব্যবহার করতে পারবেন।</p>
+      <ul>
+        <li>প্রথম ফোনে Google Drive সিঙ্ক চালু করুন।</li>
+        <li>দ্বিতীয় ফোনে অ্যাপ খুলে একই গুগল অ্যাকাউন্টে সাইন-ইন করুন।</li>
+        <li>প্রথমবার সিঙ্ক হলে অ্যাপ জিজ্ঞেস করবে— "মিলিয়ে নেবেন (Merge)" নাকি "রিপ্লেস করবেন"।</li>
+        <li>নিরাপদ থাকতে "Merge" নির্বাচন করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🔧</div>
+      <div class="guide-acc-title">সমস্যা সমাধান (Troubleshooting)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p><b>❓ ফর্মুলা কাজ করছে না / ভুল দেখাচ্ছে</b></p>
+      <ul>
+        <li>ফর্মুলায় শুধু <b>নাম্বার</b> বা <b>ফর্মুলা</b> ফিল্ড ব্যবহার করা যাবে— টেক্সট ফিল্ড কাজ করবে না।</li>
+        <li>বানান মিলছে কিনা চেক করুন।</li>
+        <li>বিল্ডারে গিয়ে ফর্মুলা প্রিভিউতে সব ফিল্ড = ১০ ধরে ফলাফল দেখুন।</li>
+      </ul>
+
+      <p style="margin-top:12px;"><b>❓ লুকআপে "⚠️ এই লুকআপের উৎস ফিল্ড ডিলিট হয়ে গেছে" দেখাচ্ছে</b></p>
+      <ul>
+        <li>উৎস বুকের যে ফিল্ড থেকে ডেটা আসছিল সেটি ডিলিট হয়েছে।</li>
+        <li>বিল্ডারে গিয়ে লুকআপ ফিল্ডটি এডিট করে নতুন ফিল্ড সিলেক্ট করুন।</li>
+      </ul>
+
+      <p style="margin-top:12px;"><b>❓ Google Drive সিঙ্ক হচ্ছে না</b></p>
+      <ul>
+        <li>ইন্টারনেট কানেকশন চেক করুন।</li>
+        <li>মেনু → Google Drive → ডিসকানেক্ট করে আবার কানেক্ট করুন।</li>
+        <li>ব্রাউজারে থার্ড-পার্টি কুকি ব্লক থাকলে সেটি অন করুন।</li>
+      </ul>
+
+      <p style="margin-top:12px;"><b>❓ CSV/Excel ইমপোর্টে ডেটা আসছে না</b></p>
+      <ul>
+        <li>CSV ফাইলের হেডারে বুকের ফিল্ডের নামের সাথে মিলছে কিনা চেক করুন।</li>
+        <li>Excel ফাইলে একাধিক শিট থাকলে সঠিক শিট সিলেক্ট করুন।</li>
+        <li>কলাম ম্যাপিং অংশে কোনো ফিল্ডে "বাদ দিন" সিলেক্ট করা আছে কিনা দেখুন।</li>
+      </ul>
+
+      <p style="margin-top:12px;"><b>❓ ডেটা হারিয়ে গেছে মনে হচ্ছে</b></p>
+      <ul>
+        <li>প্রথমে রিসাইকেল বিন চেক করুন।</li>
+        <li>Google Drive-এ সাইন-ইন করে রিস্টোর করুন।</li>
+        <li>সর্বশেষ JSON ব্যাকআপ ফাইল থাকলে সেটি রিস্টোর করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🖨️</div>
+      <div class="guide-acc-title">প্রিন্ট ও PDF টিপস</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <ul>
+        <li>Statistics ট্যাবে <b>📥 এক্সপোর্ট → PDF</b> বাটনে ক্লিক করলে পুরো টেবিল প্রিন্ট প্রিভিউতে আসবে।</li>
+        <li>প্রিন্ট প্রিভিউতে <b>"Save as PDF"</b> সিলেক্ট করলে PDF ফাইল হিসেবে সেভ হবে।</li>
+        <li>এই গাইড পেজটি PDF করতে হলে উপরের 🖨️ বাটনে ক্লিক করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">⌨️</div>
+      <div class="guide-acc-title">কীবোর্ড শর্টকাট (ডেস্কটপ)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <ul>
+        <li><b>Ctrl + Z:</b> আনডু</li>
+        <li><b>Ctrl + Y:</b> রিডু</li>
+        <li><b>Esc:</b> খোলা মডাল বা পপআপ বন্ধ করুন।</li>
+        <li><b>Tab:</b> এক ঘর থেকে পরের ঘরে যান।</li>
+        <li><b>Enter:</b> ফর্মে পরের ঘরে যান বা সেভ করুন।</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-accordion">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon">🤝</div>
+      <div class="guide-acc-title">সমস্যা সমাধান না হলে</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>উপরের সব চেক করার পরেও সমস্যা থাকলে সরাসরি আমাদের সাথে যোগাযোগ করুন:</p>
+      <ul>
+        <li><b>📧 ইমেইল:</b> nishatbadhon117@gmail.com</li>
+        <li><b>💬 হেল্প সেন্টার:</b> মেনু → হেল্প ও সাপোর্ট</li>
+        <li><b>📝 ফিডব্যাক:</b> নিচের "ফিডব্যাক পাঠান" বাটনে ক্লিক করুন</li>
+      </ul>
+      <p>মেসেজে লিখুন— আপনি কোন ফোন/ব্রাউজার ব্যবহার করছেন, কী করতে গিয়ে সমস্যা হয়েছে, এবং সম্ভব হলে স্ক্রিনশট দিন।</p>
+    </div>
+  </div>
+
+  <div class="guide-accordion" style="border-color: #A7F3D0;">
+    <div class="guide-acc-header" onclick="toggleAccordion(this)">
+      <div class="guide-acc-icon" style="background:#D1FAE5; color:#047857;">🤖</div>
+      <div class="guide-acc-title">AI সহায়ক (নতুন)</div>
+      <div class="guide-acc-arrow">▼</div>
+    </div>
+    <div class="guide-acc-body">
+      <p>এই গাইড পেজে নিচে ডান দিকে একটি 💬 বাটন আছে। ক্লিক করলে <b>লিখিপাতা সহায়ক</b> চ্যাটবট খুলে যাবে।</p>
+      <ul>
+        <li>এই চ্যাটবট শুধু <b>লিখিপাতা অ্যাপ</b> সম্পর্কে উত্তর দিতে পারবে।</li>
+        <li>যেমন: "নতুন বুক কীভাবে তৈরি করব?", "ফর্মুলা কীভাবে ব্যবহার করব?", "লুকআপ ফিল্ড কী?" ইত্যাদি।</li>
+        <li>এটি সম্পূর্ণ ফ্রি এবং ইন্টারনেট ছাড়াই কাজ করে।</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+<!-- END TAB 6 -->
+
+    <div style="text-align: center; margin-top: 30px; padding: 0 20px;" class="no-print">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">আপনার অ্যাপটি কেমন লাগলো? মতামত জানান।</p>
+      <a href="feedback.html" class="action-btn btn-primary-action" style="display: inline-block; width: auto; padding: 12px 24px;">💬 ফিডব্যাক পাঠান</a>
+    </div>
+
+    <div class="thank-you" style="margin-top: 20px;">
+      "লিখিপাতা" — আপনার নিজের ডেটা, আপনার নিজের নিয়মে<br>
+      <span style="font-size: 11.5px;">Made with ❤️</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== AI Chatbot Widget ========== -->
+<button class="chat-toggle-btn" onclick="toggleChatWindow()" title="সহায়তা নিন">💬</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="icon">🤖</div>
+    <div class="title">লিখিপাতা সহায়ক</div>
+    <button class="close-x" onclick="toggleChatWindow()">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-bubble bot">আসসালামু আলাইকুম! আমি লিখিপাতা অ্যাপের সহায়ক। অ্যাপ সম্পর্কে কোনো প্রশ্ন থাকলে জিজ্ঞেস করুন।</div>
+  </div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="chat-suggestion-btn" onclick="askSuggestion('নতুন বুক কীভাবে তৈরি করব?')">নতুন বুক তৈরি</button>
+    <button class="chat-suggestion-btn" onclick="askSuggestion('ফর্মুলা কীভাবে ব্যবহার করব?')">ফর্মুলা ব্যবহার</button>
+    <button class="chat-suggestion-btn" onclick="askSuggestion('ডেটা ব্যাকআপ কীভাবে নেব?')">ব্যাকআপ</button>
+    <button class="chat-suggestion-btn" onclick="askSuggestion('ড্যাশবোর্ড বুক কী?')">ড্যাশবোর্ড বুক</button>
+  </div>
+  <div class="chat-input-wrap">
+    <input type="text" class="chat-input" id="chatInput" placeholder="প্রশ্ন লিখুন..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+    <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/storage-indexeddb.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof initStorage === 'function') await initStorage();
+    applyTheme(getTheme());
+  });
+
+  function switchGuideTab(tabId, btnElement) {
+    document.querySelectorAll('.guide-content-section').forEach(sec => {
+      sec.classList.remove('active');
+    });
+    document.querySelectorAll('.guide-tab').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.getElementById(tabId).classList.add('active');
+    btnElement.classList.add('active');
+    window.scrollTo({ top: 100, behavior: 'smooth' });
+  }
+
+  function toggleAccordion(headerElement) {
+    const accordion = headerElement.parentElement;
+    const isOpen = accordion.classList.contains('open');
+    if (isOpen) {
+      accordion.classList.remove('open');
+    } else {
+      accordion.classList.add('open');
+    }
+  }
+
+  /* ============================================================
+     AI Chatbot Logic — Rule-Based + Typing Animation
+     ============================================================ */
+
+  const CHATBOT_RULES = [
+    {
+      keywords: ['ড্যাশবোর্ড', 'dashboard', 'ড্যাশবোর্ড বুক'],
+      answer: 'ড্যাশবোর্ড বুক তৈরি করলে আপনি অন্য বুকের সামারি কার্ডগুলো এক জায়গায় দেখতে পাবেন। নতুন বুক তৈরি করার সময় <b>📊 ড্যাশবোর্ড বুক</b> সিলেক্ট করুন। এরপর বিল্ডারে গিয়ে <b>"➕ নতুন ড্যাশবোর্ড কার্ড যোগ করুন"</b> ক্লিক করে উৎস বুক ও সামারি সিলেক্ট করুন।'
+    },
+    {
+      keywords: ['বুক', 'তৈরি', 'নতুন বুক', 'create book', 'book'],
+      answer: 'নতুন বুক তৈরি করতে হোম স্ক্রিনে <b>"➕ নতুন বুক তৈরি করুন"</b> বাটনে ক্লিক করুন। এরপর বুকের নাম, আইকন, রঙ ও ধরন (সাধারণ বুক বা ড্যাশবোর্ড বুক) সিলেক্ট করে সেভ করুন।'
+    },
+    {
+      keywords: ['ফিল্ড', 'ফিল্ড তৈরি', 'field', 'নতুন ফিল্ড'],
+      answer: 'বুক কার্ডে <b>✏️ এডিট</b> বাটনে ক্লিক করে বিল্ডারে যান। সেখানে <b>"➕ নতুন ফিল্ড যোগ করুন"</b> ক্লিক করলে আপনি টেক্সট, নাম্বার, তারিখ, ড্রপডাউন, চেকবক্স, ফর্মুলা বা লুকআপ ফিল্ড যোগ করতে পারবেন।'
+    },
+    {
+      keywords: ['ফর্মুলা', 'formula', 'হিসাব', 'গণনা', 'calculator'],
+      answer: 'ফর্মুলা ফিল্ড দিয়ে অটো হিসাব করা যায়। যেমন: <code>মূল্য × পরিমাণ</code>। ফর্মুলা তৈরি করার সময় নিচের বাটনগুলো থেকে ভ্যারিয়েবল ও অপারেটর সিলেক্ট করুন। আপনি চাইলে <code>sum()</code>, <code>avg()</code>, <code>max()</code>, <code>min()</code> ফাংশনও ব্যবহার করতে পারবেন।'
+    },
+    {
+      keywords: ['লুকআপ', 'lookup', 'অন্য বুক', 'আনতে'],
+      answer: 'লুকআপ ফিল্ড দিয়ে এক বুকের ডেটা অন্য বুক থেকে আনা যায়। ফিল্ড তৈরির সময় "লুকআপ" সিলেক্ট করে উৎস বুক ও কোন ফিল্ডের মান দেখাবে তা বেছে নিন। এছাড়া <b>অটো-ম্যাচ</b> ও <b>লাইভ লিংক</b> অপশনও আছে। এখন ফর্মুলা ফিল্ডও লুকআপে আনা যায়।'
+    },
+    {
+      keywords: ['ব্যাকআপ', 'backup', 'রিস্টোর', 'restore', 'সেভ'],
+      answer: 'ব্যাকআপ নিতে মেনু → <b>💾 ব্যাকআপ ডাউনলোড</b> ক্লিক করুন। এটি একটি JSON ফাইল ডাউনলোড করবে। পরে <b>ব্যাকআপ রিস্টোর</b> থেকে সেই ফাইল আপলোড করলেই ডেটা ফিরে আসবে। এছাড়া <b>Google Drive সিঙ্ক</b> চালু রাখলে অটো ব্যাকআপ হবে।'
+    },
+    {
+      keywords: ['ড্রাইভ', 'drive', 'google drive', 'সিঙ্ক', 'sync'],
+      answer: 'মেনুতে <b>☁️ গুগল ড্রাইভ সিঙ্ক</b> অপশন আছে। গুগল অ্যাকাউন্টে সাইন-ইন করলে ডেটা অটো-সিঙ্ক হবে। একাধিক ফোনেও একই ডেটা ব্যবহার করতে পারবেন।'
+    },
+    {
+      keywords: ['ইমপোর্ট', 'import', 'csv', 'excel', 'আমদানি'],
+      answer: 'Statistics ট্যাবে গিয়ে <b>📤 ইমপোর্ট</b> ক্লিক করুন। CSV বা Excel ফাইল আপলোড করে কলাম ম্যাপিং ঠিক করলেই শত শত এন্ট্রি একসাথে যোগ হবে।'
+    },
+    {
+      keywords: ['এক্সপোর্ট', 'export', 'csv', 'excel', 'pdf', 'প্রিন্ট', 'ডাউনলোড'],
+      answer: 'Statistics ট্যাবে <b>📥 এক্সপোর্ট</b> ক্লিক করলে CSV, Excel (XLSX) বা PDF ফরম্যাটে ডেটা ডাউনলোড করতে পারবেন।'
+    },
+    {
+      keywords: ['ডিলিট', 'delete', 'রিসাইকেল', 'recycle', 'মুছে'],
+      answer: 'ডিলিট করা ডেটা <b>মেনু → 🗑️ রিসাইকেল বিন</b>-এ জমা থাকে। সেখান থেকে <b>↩️ রিস্টোর</b> ক্লিক করলে ফিরে আসবে। স্থায়ীভাবে মুছতে চাইলে <b>"স্থায়ীভাবে মুছুন"</b> ক্লিক করুন।'
+    },
+    {
+      keywords: ['থিম', 'theme', 'ডার্ক', 'dark', 'amoled', 'লাইট'],
+      answer: 'মেনু → <b>🎨 থিম পরিবর্তন</b> ক্লিক করে <b>☀️ লাইট</b>, <b>🌙 ডার্ক</b> বা <b>🌑 AMOLED</b> থিম সিলেক্ট করতে পারবেন।'
+    },
+    {
+      keywords: ['সামারি', 'summary', 'কার্ড'],
+      answer: 'বিল্ডারের নিচে <b>"Statistics সামারি কার্ড"</b> সেকশনে <b>"➕ নতুন সামারি কার্ড যোগ করুন"</b> ক্লিক করুন। কার্ডের নাম, ফিল্ড, হিসাবের ধরন ও রঙ বেছে নিন। ভিউ পেজের Statistics ট্যাবে দেখতে পাবেন।'
+    },
+    {
+      keywords: ['চার্ট', 'chart', 'গ্রাফ', 'graph'],
+      answer: 'বিল্ডারে <b>"➕ নতুন চার্ট সেকশন যোগ করুন"</b> ক্লিক করুন। সেকশনের নাম দিন এবং কোন ফিল্ডগুলো এই সেকশনে থাকবে সেগুলো সিলেক্ট করুন। Statistics ট্যাবে <b>📊 চার্ট</b> বাটনে ক্লিক করলে গ্রাফ দেখতে পাবেন।'
+    },
+    {
+      keywords: ['আনডু', 'undo', 'রিডু', 'redo'],
+      answer: 'বিল্ডারে বা ভিউ পেজে হেডারে <b>↶ আনডু</b> ও <b>↷ রিডু</b> বাটন আছে। ভুল হলে আনডু, আবার ঠিক করতে রিডু ব্যবহার করুন।'
+    },
+    {
+      keywords: ['কলাম', 'প্রস্থ', 'column', 'width'],
+      answer: 'বিল্ডারে ফিল্ড তৈরি করার সময় <b>"📏 টেবিলে কলামের প্রস্থ"</b> অপশনে ছোট, মাঝারি, বড় বা খুব বড় বেছে নিতে পারবেন।'
+    },
+    {
+      keywords: ['সার্চ', 'search', 'খুঁজুন'],
+      answer: 'হোম স্ক্রিনের উপরে একটি সার্চ বার আছে। সেখানে বুক বা এন্ট্রির যেকোনো লেখা লিখে খুঁজতে পারবেন।'
+    },
+    {
+      keywords: ['কপি', 'পেস্ট', 'copy', 'paste'],
+      answer: 'Statistics ট্যাবে যেকোনো এন্ট্রির ডান পাশে <b>📋 কপি</b> বাটনে ক্লিক করুন। এরপর অন্য বুকের ফর্ম ট্যাবে গেলে <b>পেস্ট</b> সাজেশন দেখাবে। দুই বুকের ফিল্ডের নাম এক হতে হবে।'
+    },
+    {
+      keywords: ['সমস্যা', 'problem', 'error', 'bug', 'কাজ করছে না'],
+      answer: 'প্রথমে <b>সমস্যা সমাধান (Troubleshooting)</b> অংশটি দেখুন। না হলে <b>মেনু → 💬 ফিডব্যাক পাঠান</b> থেকে আমাদের জানান।'
+    },
+    {
+      keywords: ['ফিডব্যাক', 'feedback', 'মতামত'],
+      answer: 'মেনু → <b>💬 ফিডব্যাক পাঠান</b> ক্লিক করুন। সেখানে সমস্যা বা পরামর্শ লিখে পাঠাতে পারবেন।'
+    },
+    {
+      keywords: ['চেঞ্জলগ', 'changelog', 'সংস্করণ', 'ভার্সন'],
+      answer: 'মেনু → <b>📝 চেঞ্জলগ</b> ক্লিক করে জানতে পারবেন কী কী নতুন ফিচার যোগ হয়েছে।'
+    },
+    {
+      keywords: ['ধন্যবাদ', 'thank', 'thanks'],
+      answer: 'আপনাকেও ধন্যবাদ! 😊 আরও কিছু জানতে চাইলে জিজ্ঞেস করুন।'
+    },
+    {
+      keywords: ['হ্যালো', 'hello', 'hi', 'সালাম', 'আসসালামু'],
+      answer: 'হ্যালো! আমি লিখিপাতা অ্যাপের সহায়ক। অ্যাপের কোনো ফিচার সম্পর্কে জানতে চাইলে জিজ্ঞেস করুন।'
+    },
+    {
+      keywords: ['কি', 'কী', 'কিভাবে', 'how', 'কেন'],
+      answer: 'দয়া করে আপনার প্রশ্নটি একটু বিস্তারিত লিখুন। অ্যাপের কোন ফিচার সম্পর্কে জানতে চান? (যেমন: বুক, ফিল্ড, ফর্মুলা, লুকআপ, ব্যাকআপ, ইমপোর্ট ইত্যাদি)'
+    }
+  ];
+
+  function toggleChatWindow() {
+    const win = document.getElementById('chatWindow');
+    if (!win) return;
+    win.classList.toggle('open');
+    if (win.classList.contains('open')) {
+      setTimeout(() => document.getElementById('chatInput')?.focus(), 100);
+    }
+  }
+
+  function askSuggestion(q) {
+    const input = document.getElementById('chatInput');
+    if (input) input.value = q;
+    sendChatMessage();
+  }
+
+  function findBotAnswer(userMessage) {
+    const msg = userMessage.toLowerCase().trim();
+    if (!msg) return null;
+
+    let bestMatch = null;
+    let bestLength = 0;
+
+    CHATBOT_RULES.forEach(rule => {
+      rule.keywords.forEach(kw => {
+        const k = kw.toLowerCase();
+        if (msg.includes(k) && k.length > bestLength) {
+          bestLength = k.length;
+          bestMatch = rule;
+        }
+      });
+    });
+
+    if (bestMatch) return bestMatch.answer;
+
+    return 'দুঃখিত, আমি ঠিক বুঝতে পারিনি। আমি শুধু <b>লিখিপাতা অ্যাপ</b> সম্পর্কে উত্তর দিতে পারি। আপনি চাইলে <b>বুক</b>, <b>ফিল্ড</b>, <b>ফর্মুলা</b>, <b>লুকআপ</b>, <b>ড্যাশবোর্ড বুক</b>, <b>ব্যাকআপ</b>, <b>ইমপোর্ট/এক্সপোর্ট</b>, <b>ড্রাইভ সিঙ্ক</b>, <b>থিম</b> ইত্যাদি সম্পর্কে জিজ্ঞেস করতে পারেন।';
+  }
+
+  function showTypingIndicator() {
+    const body = document.getElementById('chatBody');
+    if (!body) return;
+    const typing = document.createElement('div');
+    typing.className = 'typing-indicator';
+    typing.id = 'typingIndicator';
+    typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    body.appendChild(typing);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function hideTypingIndicator() {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+  }
+
+  function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const body = document.getElementById('chatBody');
+    if (!input || !body) return;
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    // ইউজারের মেসেজ দেখাও
+    const userBubble = document.createElement('div');
+    userBubble.className = 'chat-bubble user';
+    userBubble.textContent = text;
+    body.appendChild(userBubble);
+    input.value = '';
+
+    // টাইপিং অ্যানিমেশন দেখাও
+    showTypingIndicator();
+
+    // ২ সেকেন্ড পর বটের উত্তর দেখাও
+    setTimeout(() => {
+      hideTypingIndicator();
+      const answer = findBotAnswer(text);
+      const botBubble = document.createElement('div');
+      botBubble.className = 'chat-bubble bot';
+      botBubble.innerHTML = answer;
+      body.appendChild(botBubble);
+      body.scrollTop = body.scrollHeight;
+    }, 2000);
+
+    body.scrollTop = body.scrollHeight;
+  }
+</script>
+</body>
+</html>

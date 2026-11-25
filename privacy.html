@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1E3A8A">
+<title>প্রাইভেসি পলিসি — লিখিপাতা</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/pages.css">
+<style>
+  /* ============ Privacy Specific Styles ============ */
+  
+  .privacy-hero {
+    text-align: center;
+    padding: 32px 20px 24px;
+    background: linear-gradient(160deg, #ECFDF5 0%, #EFF6FF 100%);
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    border: 1px solid var(--border-subtle);
+  }
+  .privacy-hero .shield-icon {
+    font-size: 56px;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: shieldPulse 2s infinite;
+  }
+  @keyframes shieldPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .privacy-hero h1 { font-size: 24px; color: var(--primary); font-weight: 800; margin-bottom: 6px; }
+  .privacy-hero p { font-size: 14px; color: var(--text-muted); }
+  .update-date {
+    display: inline-block;
+    background: var(--bg-card);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-top: 12px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* Privacy Content Cards */
+  .privacy-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
+  }
+  .privacy-card h3 {
+    font-size: 16px;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .privacy-card h3 .icon-box {
+    width: 32px; height: 32px;
+    background: var(--primary-soft);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .privacy-card p {
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.75;
+    margin-bottom: 10px;
+  }
+  .privacy-card ul {
+    padding-left: 20px;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.8;
+    margin-top: 8px;
+  }
+  .privacy-card ul li::marker { color: var(--primary-light); }
+  .privacy-card ul li { margin-bottom: 6px; }
+
+  .highlight-box {
+    background: #D1FAE5;
+    border: 1.5px solid #A7F3D0;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-top: 14px;
+    display: flex;
+    gap: 12px;
+  }
+  .highlight-box .icon { font-size: 24px; flex-shrink: 0; }
+  .highlight-box p {
+    font-size: 13px;
+    color: #065F46;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Dark & AMOLED Overrides */
+  body.dark-mode .privacy-hero { background: linear-gradient(160deg, #022c22 0%, #1E1B4B 100%); }
+  body.dark-mode .privacy-card { background: var(--bg-card); border-color: #334155; }
+  body.dark-mode .privacy-card p, 
+  body.dark-mode .privacy-card ul { color: #CBD5E1; }
+  body.dark-mode .privacy-card h3 .icon-box { background: #1E3A8A; color: #93C5FD; }
+  body.dark-mode .highlight-box { background: #022c22; border-color: #065f46; }
+  body.dark-mode .highlight-box p { color: #6EE7B7; }
+  body.dark-mode .update-date { background: var(--bg-card); border-color: #334155; }
+
+  body.amoled-mode .privacy-hero { background: linear-gradient(160deg, #000000 0%, #042F2E 100%); border-color: #333; }
+  body.amoled-mode .privacy-card { background: #0A0A0A; border-color: #222; }
+  body.amoled-mode .privacy-card p, 
+  body.amoled-mode .privacy-card ul { color: #A1A1AA; }
+  body.amoled-mode .privacy-card h3 .icon-box { background: #042F2E; color: #5EEAD4; }
+  body.amoled-mode .highlight-box { background: #042F2E; border-color: #0F766E; }
+  body.amoled-mode .highlight-box p { color: #5EEAD4; }
+  body.amoled-mode .update-date { background: #111; border-color: #333; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='index.html'">←</button>
+    <h1>🔒 প্রাইভেসি পলিসি</h1>
+  </div>
+
+  <div class="screen">
+    
+    <!-- Hero -->
+    <div class="privacy-hero">
+      <div class="shield-icon">🛡️</div>
+      <h1>আপনার ডেটা সুরক্ষিত</h1>
+      <p>লিখিপাতা ১০০% অফলাইন ও প্রাইভেট</p>
+      <div class="update-date">সর্বশেষ আপডেট: ২০২৬</div>
+    </div>
+
+    <!-- Intro -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">👋</span> আমাদের প্রতিশ্রুতি</h3>
+      <p>"লিখিপাতা" অ্যাপে আপনার গোপনীয়তা আমাদের কাছে সবচেয়ে গুরুত্বপূর্ণ। আমরা বিশ্বাস করি, আপনার ব্যক্তিগত ডেটা শুধু আপনারই। তাই আমরা এমন একটি সিস্টেম তৈরি করেছি যেখানে আপনার ডেটা আপনার নিজের ফোনেই থাকে, কোনো সার্ভারে যায় না।</p>
+    </div>
+
+    <!-- Data Storage -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">💾</span> ডেটা কোথায় সেভ হয়?</h3>
+      <p>আপনি অ্যাপে যা কিছু লিখবেন (বুক, ফিল্ড, এন্ট্রি, ফর্মুলা)—সবকিছু আপনার নিজের ফোনের <b>ব্রাউজার স্টোরেজে (IndexedDB ও LocalStorage)</b> সেভ থাকে।</p>
+      <ul>
+        <li>আপনার ডেটা কোনো তৃতীয় পক্ষের সার্ভারে পাঠানো হয় না।</li>
+        <li>আমাদের কোনো ট্র্যাকিং সিস্টেম বা অ্যাড নেটওয়ার্ক নেই।</li>
+        <li>ইন্টারনেট ছাড়াই সম্পূর্ণ অ্যাপটি কাজ করে।</li>
+      </ul>
+      <div class="highlight-box">
+        <div class="icon">🔐</div>
+        <p>আপনার ডেটা শুধু আপনার ফোনে থাকে, তাই আমরা তা দেখতে বা পড়তে পারি না।</p>
+      </div>
+    </div>
+
+    <!-- Google Drive -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">☁️</span> গুগল ড্রাইভ সিঙ্ক (ঐচ্ছিক)</h3>
+      <p>আপনি চাইলে <b>গুগল ড্রাইভ</b>-এর সাথে সিঙ্ক করে ব্যাকআপ রাখতে পারেন। এটি সম্পূর্ণ আপনার ইচ্ছাধীন।</p>
+      <ul>
+        <li>সিঙ্ক চালু করলে আপনার ডেটা আপনার নিজের গুগল ড্রাইভের <b>App Data Folder</b>-এ সেভ হয়।</li>
+        <li>এই ফোল্ডারটি শুধু "লিখিপাতা" অ্যাপই দেখতে পারে, গুগলের অন্য কোনো অ্যাপ বা আমরা দেখতে পারি না।</li>
+        <li>আপনি যেকোনো সময় সাইন-আউট করে সিঙ্ক বন্ধ করতে পারেন।</li>
+      </ul>
+    </div>
+
+    <!-- Third Party -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">🤝</span> তৃতীয় পক্ষের সেবা</h3>
+      <p>অ্যাপে আমরা কিছু ওপেন সোর্স ও ফ্রি টুল ব্যবহার করি, যা আপনার ব্যক্তিগত ডেটা সংগ্রহ করে না:</p>
+      <ul>
+        <li><b>Google Fonts:</b> সুন্দর বাংলা ফন্টের জন্য।</li>
+        <li><b>Google Drive API:</b> শুধু আপনার নিজের ব্যাকআপের জন্য।</li>
+        <li><b>SheetJS:</b> Excel ফাইল তৈরি ও পড়ার জন্য (ডেটা কোনো সার্ভারে যায় না)।</li>
+      </ul>
+    </div>
+
+    <!-- User Rights -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">✊</span> আপনার অধিকার</h3>
+      <p>আপনি যেকোনো সময় নিচের কাজগুলো করতে পারবেন:</p>
+      <ul>
+        <li><b>ডেটা এক্সপোর্ট:</b> মেনু থেকে ব্যাকআপ ডাউনলোড করে নিজের ডেটা ফোনে রাখতে পারবেন।</li>
+        <li><b>ডেটা ডিলিট:</b> যেকোনো সময় বুক বা এন্ট্রি ডিলিট করতে পারবেন (রিসাইকেল বিন থেকে স্থায়ীভাবে মুছতে পারবেন)।</li>
+        <li><b>সিঙ্ক বন্ধ:</b> মেনু থেকে সাইন-আউট করে ড্রাইভ সিঙ্ক বন্ধ করতে পারবেন।</li>
+      </ul>
+    </div>
+
+    <!-- Children's Privacy -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">👶</span> শিশুদের গোপনীয়তা</h3>
+      <p>আমাদের অ্যাপটি ১৩ বছরের কম বয়সী শিশুদের জন্য কোনো ব্যক্তিগত তথ্য সংগ্রহ করে না। কারণ আমরা আসলেই কোনো তথ্য সংগ্রহই করি না।</p>
+    </div>
+
+    <!-- Changes -->
+    <div class="privacy-card">
+      <h3><span class="icon-box">📝</span> পলিসি পরিবর্তন</h3>
+      <p>ভবিষ্যতে অ্যাপে নতুন ফিচার যোগ হলে এই পলিসি আপডেট হতে পারে। আমরা সবসময় স্বচ্ছ থাকার চেষ্টা করি। বড় কোনো পরিবর্তন হলে অ্যাপের ভেতরেই নোটিশ দেওয়া হবে।</p>
+    </div>
+
+    <!-- Contact -->
+    <div class="privacy-card" style="background: linear-gradient(135deg, var(--bg-card), var(--bg-subtle));">
+      <h3><span class="icon-box">📞</span> যোগাযোগ</h3>
+      <p>প্রাইভেসি পলিসি নিয়ে কোনো প্রশ্ন থাকলে সরাসরি আমাদের সাথে যোগাযোগ করুন:</p>
+      <p style="margin-top:12px;"><b>📧 ইমেইল:</b> <a href="mailto:nishatbadhon117@gmail.com" style="color:var(--primary-light); font-weight:700; text-decoration:none;">nishatbadhon117@gmail.com</a></p>
+      
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <a href="help.html" class="btn btn-cancel" style="text-decoration:none; padding: 12px; flex:1; text-align:center; border-radius: var(--radius-sm); background: var(--bg-subtle); color: var(--text-main); font-weight: 700; font-size: 14px;">❓ হেল্প সেন্টার</a>
+        <a href="feedback.html" class="btn btn-primary" style="text-decoration:none; padding: 12px; flex:1; text-align:center; border-radius: var(--radius-sm); color: white; font-weight: 700; font-size: 14px;">💬 ফিডব্যাক</a>
+      </div>
+    </div>
+
+    <div class="thank-you" style="margin-top: 20px;">
+      "আপনার বিশ্বাসই আমাদের সবচেয়ে বড় শক্তি"<br>
+      <span style="font-size: 11.5px;">লিখিপাতা — সংস্করণ ১.০</span>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/storage-indexeddb.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (typeof initStorage === 'function') await initStorage();
+    applyTheme(getTheme());
+  });
+</script>
+</body>
+</html>

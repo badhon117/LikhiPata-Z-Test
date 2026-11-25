@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1E3A8A">
+<title>সাব-বুক ম্যানেজার — লিখিপাতা</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/sync-backup.css">
+<link rel="stylesheet" href="css/dashboard-book.css">
+<style>
+  /* সাব-বুক পেজের জন্য কিছু কাস্টম স্টাইল */
+  .sub-books-header {
+    background: var(--bg-card);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .sub-books-header-icon {
+    font-size: 40px;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+  }
+  .sub-books-header-info h2 {
+    font-size: 20px;
+    margin-bottom: 4px;
+    color: var(--text-main);
+  }
+  .sub-books-header-info p {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .back-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-main);
+    padding: 0 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <button class="back-btn" onclick="goBackToHome()">←</button>
+    <h1>সাব-বুক ম্যানেজার</h1>
+    <button class="header-icon-btn" onclick="openCreateSubBookModal()" title="নতুন সাব-বুক">➕</button>
+  </div>
+
+  <div class="screen">
+    
+    <!-- মূল বইয়ের তথ্য -->
+    <div class="sub-books-header" id="parentBookHeader">
+      <!-- JS দিয়ে পূরণ হবে -->
+    </div>
+
+    <!-- সাব-বুক লিস্ট -->
+    <div class="books-section">
+      <div class="section-title-wrap">
+        <h3>📚 সাব-বুকগুলো</h3>
+        <span class="count-badge" id="subBookCount">০টি</span>
+      </div>
+      <div class="books-list" id="subBooksList"></div>
+      
+      <!-- খালি অবস্থা -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="icon">📂</div>
+        <h3>এখনো কোনো সাব-বুক নেই</h3>
+        <p>উপরের "+" বাটনে ক্লিক করে আপনার প্রথম সাব-বুক তৈরি করুন!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SUB-BOOK CREATE MODAL ========== -->
+<div class="modal-overlay" id="subBookModal" onclick="if(event.target===this) closeSubBookModal()">
+  <div class="modal-content">
+    <h3>
+      <span id="subBookModalTitle">নতুন সাব-বুক তৈরি করুন</span>
+      <button class="close-x" onclick="closeSubBookModal()">✕</button>
+    </h3>
+    
+    <div class="form-group">
+      <label>সাব-বুকের নাম <span class="req">*</span></label>
+      <input type="text" id="subBookNameInput" placeholder="যেমন: দৈনিক বিক্রি, খরচের হিসাব..." maxlength="50">
+    </div>
+    
+    <div class="form-group">
+      <label>আইকন (ইমোজি)</label>
+      <input type="text" id="subBookIconInput" placeholder="📁" style="font-size:24px; text-align:center;">
+    </div>
+
+    <div class="form-group">
+  <label>সাব-বুকের ধরন</label>
+  <select id="subBookTypeInput" style="width:100%; padding:12px; border-radius:8px; border:1.5px solid var(--border-subtle); font-family:inherit; font-size:14px;">
+    <option value="normal">📘 সাধারণ সাব-বুক (ডেটা এন্ট্রি)</option>
+    <option value="dashboard">📊 ড্যাশবোর্ড সাব-বুক (সামারি)</option>
+  </select>
+    </div>
+
+    <div class="form-group">
+      <label>রঙ</label>
+      <input type="hidden" id="subBookColorInput" value="linear-gradient(135deg,#DBEAFE,#BFDBFE)">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 12px;">
+        <div class="color-option" data-color="linear-gradient(135deg,#DBEAFE,#BFDBFE)" onclick="selectSubBookColor(this.dataset.color)" style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#DBEAFE,#BFDBFE); cursor:pointer; border:3px solid transparent;"></div>
+        <div class="color-option" data-color="linear-gradient(135deg,#D1FAE5,#A7F3D0)" onclick="selectSubBookColor(this.dataset.color)" style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#D1FAE5,#A7F3D0); cursor:pointer; border:3px solid transparent;"></div>
+        <div class="color-option" data-color="linear-gradient(135deg,#FEF3C7,#FDE68A)" onclick="selectSubBookColor(this.dataset.color)" style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#FEF3C7,#FDE68A); cursor:pointer; border:3px solid transparent;"></div>
+        <div class="color-option" data-color="linear-gradient(135deg,#FCE7F3,#FBCFE8)" onclick="selectSubBookColor(this.dataset.color)" style="width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#FCE7F3,#FBCFE8); cursor:pointer; border:3px solid transparent;"></div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeSubBookModal()">বাতিল</button>
+      <button class="btn btn-save" onclick="saveSubBook()">সেভ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- স্ক্রিপ্টসমূহ -->
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/storage-indexeddb.js"></script>
+<script src="js/sync-status.js"></script>
+<script src="js/sub-books.js"></script> <!-- 👈 নতুন JS ফাইল -->
+
+</body>
+</html>

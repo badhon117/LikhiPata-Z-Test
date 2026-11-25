@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F172A">
+<title>এন্ট্রি ভিউ — লিখিপাতা</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo-192.png">
+<!-- Premium Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/view.css">
+<link rel="stylesheet" href="css/dashboard-book.css">
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h1 id="pageTitle">লোড হচ্ছে...</h1>
+
+     <!-- 👇 নতুন: আনডু / রিডু বাটন -->
+  <button class="header-icon-btn" id="viewUndoBtn" onclick="undoForm()" title="আনডু" 
+    style="opacity: 0.3; pointer-events: none;">↶</button>
+  <button class="header-icon-btn" id="viewRedoBtn" onclick="redoForm()" title="রিডু" 
+    style="opacity: 0.3; pointer-events: none;">↷</button>
+
+    <button class="header-icon-btn" onclick="openBuilder()" title="এডিট">✏️</button>
+  </div>
+
+  <div class="screen">
+    <!-- Print Header (Only visible when printing) -->
+    <div class="print-header" id="printHeader">
+      <h1 id="printTitle">লিখিপাতা</h1>
+      <p id="printDate"></p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="view-tabs">
+      <button class="view-tab active" id="tabForm" onclick="switchViewTab('form')">📝 ফর্ম</button>
+      <button class="view-tab" id="tabTable" onclick="switchViewTab('table')">📊 Statistics</button>
+    </div>
+
+    <!-- Form View -->
+    <div id="formView">
+      <div class="form-card">
+        <h2>
+          <span id="formTitle">নতুন এন্ট্রি</span>
+          <span class="edit-badge" id="editBadge" style="display:none;">এডিট</span>
+        </h2>
+        <div id="dynamicForm"></div>
+        
+        <!-- No Fields State -->
+        <div class="no-fields-state" id="noFieldsState" style="display:none;">
+          <div class="icon">📋</div>
+          <h3>কোনো ফিল্ড নেই</h3>
+          <p>এই বুকের জন্য এখনো কোনো ফিল্ড তৈরি করা হয়নি। আগে ফিল্ড তৈরি করুন।</p>
+          <button onclick="openBuilder()">ফিল্ড তৈরি করুন</button>
+        </div>
+
+        <!-- Form Buttons -->
+        <!-- 📋 ক্লিপবোর্ড সাজেশন (কপি করা ডেটা থাকলে দেখাবে) -->
+<div class="clipboard-suggestion" id="clipboardSuggestion" style="display:none;">
+  <div class="clipboard-icon">📋</div>
+  <div class="clipboard-body">
+    <strong id="clipboardTitle">কপি করা ডেটা আছে</strong>
+    <p id="clipboardSubtitle">চাইলে এই ফর্মে বসাতে পারেন</p>
+  </div>
+  <div class="clipboard-actions">
+    <button class="clipboard-btn-apply" onclick="pasteEntryFromClipboard()">পেস্ট</button>
+    <button class="clipboard-btn-dismiss" onclick="dismissClipboardSuggestion()" title="বন্ধ করুন">✕</button>
+  </div>
+</div>
+
+<div class="btn-row" id="formBtnRow">
+  <button class="btn btn-save" onclick="saveEntry()">💾 সেভ করুন</button>
+  <button class="btn btn-cancel" onclick="cancelForm()">বাতিল</button>
+  <button class="btn btn-delete" id="deleteBtn" onclick="deleteCurrent()" style="display:none;">🗑️ ডিলিট</button>
+</div>
+      </div>
+    </div>
+
+    <!-- Table View -->
+    <div id="tableView" style="display:none;">
+      <!-- Statistics Summary -->
+      <div class="summary-strip" id="summaryStrip">
+        <!-- Dynamically populated by JS -->
+      </div>
+
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <input type="text" class="table-search" id="tableSearch" placeholder="🔍 সার্চ করুন..." oninput="updateTableAndSummaries()">
+        
+        <div class="table-toolbar-row">
+          <button class="table-tool-btn" id="filterBtn" onclick="toggleFilterPanel()">🔽 ফিল্টার</button>
+          <button class="table-tool-btn" id="sortBtn" onclick="toggleSortPanel()">↕️ সর্ট</button>
+          <button class="table-tool-btn select" id="selectModeBtn" onclick="isSelectMode ? exitSelectMode() : enterSelectMode()">☑ Select</button>
+          <button class="table-tool-btn export" onclick="openExportSheet()">📥 এক্সপোর্ট</button>
+          <button class="table-tool-btn" onclick="openImportSheet()" style="background:#ECFDF5; border-color:#A7F3D0; color:#047857;">📤 ইমপোর্ট</button>
+          <button class="table-tool-btn" onclick="openChartModal()" style="background: #FEF3C7; border-color: #FDE68A; color: #92400E;">
+           📊 চার্ট
+            </button>
+        </div>
+
+        <!-- Filter Panel -->
+                <!-- Filter Panel -->
+        <div class="filter-panel" id="filterPanel">
+          <label>তারিখ অনুযায়ী ফিল্টার</label>
+          <select id="filterDate" onchange="toggleDateRange(); updateTableAndSummaries();">
+            <option value="">সব</option>
+            <option value="today">আজ</option>
+            <option value="week">গত ৭ দিন</option>
+            <option value="month">এই মাস</option>
+            <option value="year">এই বছর</option>
+            <option value="custom">কাস্টম তারিখ রেঞ্জ</option>
+          </select>
+          
+          <!-- Date Range Inputs -->
+          <div id="dateRangeInputs" style="display: none; margin-top: 10px;">
+            <label style="margin-top: 10px;">শুরুর তারিখ</label>
+            <input type="date" id="filterStartDate" onchange="updateTableAndSummaries()"> 
+            
+            <label style="margin-top: 10px;">শেষ তারিখ</label>
+            <input type="date" id="filterEndDate" onchange="updateTableAndSummaries()">
+            
+          </div>
+        </div>
+
+        <!-- Sort Panel -->
+<div class="filter-panel" id="sortPanel">
+  <label>সাজান</label>
+  <select id="sortBy" onchange="onSortByChange()">
+    <option value="newest">নতুন আগে (তৈরি)</option>
+    <option value="oldest">পুরোনো আগে (তৈরি)</option>
+    <option value="updated_desc">সর্বশেষ এডিট আগে</option>
+    <option value="updated_asc">সর্বশেষ এডিট পুরোনো</option>
+    <option value="date_newest">তারিখ অনুযায়ী নতুন</option>
+    <option value="date_oldest">তারিখ অনুযায়ী পুরোনো</option>
+    <option value="field_desc">বড় → ছোট</option>
+    <option value="field_asc">ছোট → বড়</option>
+    
+  </select>
+
+  <!-- 👇 নতুন: কোন ফিল্ড দিয়ে সর্ট করবেন (শুধু field_desc/field_asc/az/za হলে দেখাবে) -->
+  <div id="sortFieldWrap" style="display:none; margin-top:10px;">
+    <label style="margin-top:10px;">কোন ফিল্ড দিয়ে?</label>
+    <select id="sortFieldKey" onchange="updateTableAndSummaries()"></select>
+  </div>
+</div>
+
+      <!-- Selection Bar -->
+      <div class="selection-bar" id="selectionBar">
+        <span class="count" id="selCount">০টি নির্বাচিত</span>
+        <button onclick="toggleSelectAll()">সব সিলেক্ট</button>
+        <button class="danger" onclick="deleteSelected()">ডিলিট</button>
+      </div>
+
+      <!-- Table -->
+      <div class="view-table-card">
+        <div class="view-table-wrap">
+          <table class="view-table">
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="table-empty" id="tableEmpty" style="display:none;">
+          <div class="icon">📭</div>
+          <p>কোনো ডেটা নেই</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Export Sheet -->
+<div class="sheet-overlay" id="exportOverlay" onclick="closeExportSheet()"></div>
+<div class="bottom-sheet" id="exportSheet">
+  <div class="sheet-drag"></div>
+  <div class="sheet-title">এক্সপোর্ট ফরম্যাট নির্বাচন করুন</div>
+  <div class="sheet-options">
+    <button class="sheet-btn" onclick="exportCSV()">
+      <span class="icon">📄</span>
+      <span class="text">CSV</span>
+    </button>
+    <button class="sheet-btn" onclick="exportXLSXFromView()">
+      <span class="icon">📊</span>
+      <span class="text">Excel</span>
+    </button>
+    <button class="sheet-btn" onclick="exportPDF()">
+      <span class="icon">🖨️</span>
+      <span class="text">PDF</span>
+    </button>
+  </div>
+  
+    <button class="sheet-cancel" onclick="closeExportSheet()">বাতিল</button>
+</div>
+
+<!-- Import Sheet -->
+<div class="sheet-overlay" id="importOverlay" onclick="closeImportSheet()"></div>
+<div class="bottom-sheet" id="importSheet">
+  <div class="sheet-drag"></div>
+  <div class="sheet-title">ইমপোর্ট ফরম্যাট নির্বাচন করুন</div>
+  <div class="sheet-options">
+    <button class="sheet-btn" onclick="closeImportSheet(); openCsvImportFlow();" style="background:#ECFDF5; border-color:#A7F3D0;">
+      <span class="icon">📥</span>
+      <span class="text">CSV / Excel</span>
+    </button>
+  </div>
+  <button class="sheet-cancel" onclick="closeImportSheet()">বাতিল</button>
+</div>
+
+<!-- ========== CHART MODAL ========== -->
+<!-- ========== CHART MODAL ========== -->
+<div class="modal-overlay" id="chartModal" onclick="if(event.target===this) closeChartModal()">
+  <div class="modal-content" style="max-width: 500px; width: 95%; max-height: 90vh; overflow-y: auto;">
+    <h3 style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <span>📊 ডেটা ভিজুয়ালাইজেশন</span>
+      <button class="close-x" onclick="closeChartModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted);">✕</button>
+    </h3>
+    
+    <!-- 👇 নতুন: ফিল্টার এবং ফিল্ড সিলেক্টর -->
+    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">
+      
+      
+      
+      <!-- 👇 দিন, মাস, বছর ফিল্টার -->
+      <div style="display: flex; gap: 8px;">
+        <select id="chartDay" onchange="renderChart()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border-subtle); font-family: inherit; font-size: 13px; background: var(--bg-subtle); color: var(--text-main);">
+          <option value="">সব দিন</option>
+        </select>
+        <select id="chartMonth" onchange="renderChart()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border-subtle); font-family: inherit; font-size: 13px; background: var(--bg-subtle); color: var(--text-main);">
+          <option value="">সব মাস</option>
+        </select>
+        <select id="chartYear" onchange="renderChart()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border-subtle); font-family: inherit; font-size: 13px; background: var(--bg-subtle); color: var(--text-main);">
+          <option value="">সব বছর</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- চার্ট ক্যানভাস কন্টেইনার (এখানে একাধিক চার্ট তৈরি হবে) -->
+<div id="chartCanvasContainer" style="width: 100%; padding: 0 10px;">
+  <!-- JS দিয়ে চার্টগুলো এখানে বসবে -->
+</div>
+    
+    <!-- সামারি স্ট্যাটস -->
+    <div id="chartSummaryText" style="text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 12px; font-weight: 600;"></div>
+
+    <div class="modal-actions" style="margin-top: 20px;">
+      <button class="btn btn-cancel" onclick="closeChartModal()">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+  
+<div class="modal-overlay" id="deleteModal" onclick="if(event.target===this) closeDeleteModal()">
+  <div class="modal-content">
+    <h3>
+      <span>⚠️ ডিলিট নিশ্চিতকরণ</span>
+      <button class="close-x" onclick="closeDeleteModal()">✕</button>
+    </h3>
+    <p id="deleteMessage" style="font-size:14.5px; color:#475569; line-height:1.6; margin-bottom:20px;">এই এন্ট্রিটি ডিলিট করবেন?</p>
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeDeleteModal()">বাতিল</button>
+      <button class="btn btn-delete" onclick="confirmDelete()">হ্যাঁ, ডিলিট</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CALC HISTORY MODAL ========== -->
+<div class="modal-overlay" id="calcHistoryModal" onclick="if(event.target===this) closeCalcHistory()">
+  <div class="modal-content calc-history-modal-content">
+    <div class="calc-history-header">
+      <div class="calc-history-header-left">
+        <div class="calc-history-icon-box">🧮</div>
+        <div>
+          <h3 id="calcHistoryFieldLabel">হিসাবের ইতিহাস</h3>
+          <p class="calc-history-subtitle">সর্বশেষ করা হিসাব</p>
+        </div>
+      </div>
+      <button class="close-x" onclick="closeCalcHistory()">✕</button>
+    </div>
+
+    <div class="calc-history-body" id="calcHistoryBody">
+      <!-- JS দিয়ে পূরণ হবে -->
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeCalcHistory()">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB (Floating Action Button) for adding new entry -->
+<button class="fab-add-entry" id="fabAddEntry" onclick="cancelForm(); switchViewTab('form')" title="নতুন এন্ট্রি">
+  <span>+</span>
+</button>
+
+<!-- CSV Import file input -->
+<input type="file" id="csvImportFileInput"
+  accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  style="display:none;" onchange="handleCsvFileSelected(event)">
+
+<!-- ========== CSV IMPORT MODAL ========== -->
+<div class="modal-overlay" id="csvImportModal" onclick="if(event.target===this) closeCsvImportModal()">
+  <div class="modal-content csv-import-modal-content">
+    <h3>
+      <span>📥 CSV ইমপোর্ট</span>
+      <button class="close-x" onclick="closeCsvImportModal()">✕</button>
+    </h3>
+
+    <p class="csv-import-fileinfo" id="csvImportFileInfo"></p>
+
+<!-- 👇 নতুন: Sheet selector -->
+<div id="csvSheetSelectorWrap" style="display:none; margin-bottom: 14px;">
+  <label style="font-size:12.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">
+    📑 কোন শিট থেকে ইমপোর্ট করবেন?
+  </label>
+  <select id="csvSheetSelector" onchange="onCsvSheetChange(this.value)"
+    style="width:100%; padding:10px 12px; border:1.5px solid var(--border-subtle); border-radius:8px; font-family:inherit; font-size:14px; background:var(--bg-card); color:var(--text-main);">
+  </select>
+</div>
+
+    <div class="csv-import-section">
+      <h4 class="csv-import-section-title">🔗 কলাম ম্যাপিং</h4>
+      <p class="csv-import-hint">CSV-এর কোন কলাম বুকের কোন ফিল্ডে যাবে সেটি ঠিক করুন। "বাদ দিন" রাখলে ওই কলাম ইমপোর্ট হবে না।</p>
+      <div id="csvMappingList" class="csv-mapping-list"></div>
+    </div>
+
+    <div class="csv-import-section">
+      <h4 class="csv-import-section-title">👁️ প্রিভিউ (প্রথম ৫টি সারি)</h4>
+      <div class="csv-preview-wrap" id="csvPreviewTable"></div>
+    </div>
+
+    <div class="csv-import-summary" id="csvImportSummary"></div>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeCsvImportModal()">বাতিল</button>
+      <button class="btn btn-save" id="csvImportConfirmBtn" onclick="confirmCsvImport()">📥 ইমপোর্ট করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="js/chart.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/storage-indexeddb.js"></script>
+<script src="js/backup-manager.js"></script>
+<script src="js/formula-engine.js"></script>
+<script src="js/csv-import.js"></script>       <!-- 👈 নতুন -->
+<script src="js/xlsx-engine.js"></script> 
+<script src="js/csv-import-ui.js"></script>    <!-- 👈 নতুন -->
+<script src="js/view.js"></script>
+<script src="js/dashboard-book.js"></script>
+</body>
+</html>
