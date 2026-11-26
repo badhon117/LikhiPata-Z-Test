@@ -69,16 +69,25 @@
     <div class="dashboard-hero">
       <h2>স্বাগতম!</h2>
       <p>আপনার নিজের বুক ও ফর্ম তৈরি করুন</p>
+      
+
       <div class="dashboard-stats">
-        <div class="dash-stat">
-          <div class="num" id="statBooks">০</div>
-          <div class="lbl">বুক</div>
-        </div>
-        <div class="dash-stat">
-          <div class="num" id="statEntries">০</div>
-          <div class="lbl">মোট এন্ট্রি</div>
-        </div>
+  <div class="dash-stat">
+    <div class="num" id="statBooks">০</div>
+    <div class="lbl">বুক</div>
+  </div>
+  <!-- 👇 এই অংশটুকু নতুন যোগ করলাম -->
+  <div class="dash-stat">
+    <div class="num" id="statSubBooks">০</div>
+    <div class="lbl">সাব-বুক</div>
+  </div>
+  <!-- 👆 নতুন অংশ শেষ -->
+  <div class="dash-stat">
+    <div class="num" id="statEntries">০</div>
+    <div class="lbl">মোট এন্ট্রি</div>
+  </div>
       </div>
+      
       <button class="btn-create-book" onclick="openCreateBookModal()">
         <span>➕</span> নতুন বুক তৈরি করুন
       </button>
