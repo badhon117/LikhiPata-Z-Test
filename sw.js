@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.0.0.1.9'; // 👈 ভার্সন বাড়িয়ে দিলাম
+const CACHE_VERSION = 'v1.0.0.1.9.1'; // 👈 ভার্সন বাড়িয়ে দিলাম
 const CACHE_NAME = 'likhipata-' + CACHE_VERSION;
 
 const ASSETS_TO_CACHE = [
