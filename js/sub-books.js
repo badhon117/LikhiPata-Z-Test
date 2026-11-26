@@ -91,15 +91,17 @@ function renderSubBooks() {
     return (b.createdAt || 0) - (a.createdAt || 0);
   });
 
-  list.innerHTML = subBooks.map((book) => {
-    const entryCount = getEntries(book.id).length;
-    const isDashboard = book.type === 'dashboard';
-    const iconDisplay = isDashboard ? '📊' : (book.icon || '📁');
-    const metaDisplay = isDashboard 
-      ? `📊 ড্যাশবোর্ড • ${toBn((book.dashboardCards || []).length)}টি কার্ড`
-      : `${toBn(entryCount)}টি এন্ট্রি • ${Array.isArray(book.fields) ? toBn(book.fields.length) + 'টি ফিল্ড' : 'শূন্য ফিল্ড'}`;
+  list.innerHTML = subBooks.map((book, index) => {
+  const entryCount = getEntries(book.id).length;
+  const isDashboard = book.type === 'dashboard';
+  const iconDisplay = isDashboard ? '📊' : (book.icon || '📁');
+  const metaDisplay = isDashboard 
+    ? `📊 ড্যাশবোর্ড • ${toBn((book.dashboardCards || []).length)}টি কার্ড`
+    : `${toBn(entryCount)}টি এন্ট্রি • ${Array.isArray(book.fields) ? toBn(book.fields.length) + 'টি ফিল্ড' : 'শূন্য ফিল্ড'}`;
 
-    return `
+  return `
+    <div class="book-card-wrapper" id="book-wrapper-${book.id}">
+      <!-- মূল বুক কার্ড -->
       <div class="book-card" onclick="openSubBook('${book.id}')">
         <div class="book-icon" style="background:${book.color || 'linear-gradient(135deg,#DBEAFE,#BFDBFE)'}">
           ${iconDisplay}
@@ -109,12 +111,21 @@ function renderSubBooks() {
           <p>${metaDisplay}</p>
         </div>
         <div class="book-actions" onclick="event.stopPropagation()">
-          <button class="book-action-btn" onclick="openEditSubBookModal('${book.id}')" title="এডিট">✏️</button>
-          <button class="book-action-btn" onclick="deleteSubBookConfirm('${book.id}')" title="ডিলিট">🗑️</button>
+          <button class="book-action-btn" onclick="toggleSubBookMenu('${book.id}')" title="মেনু">⋮</button>
         </div>
       </div>
-    `;
-  }).join('');
+      
+      <!-- এক্সপ্যান্ডেবল মেনু -->
+      <div class="book-menu-panel" id="book-menu-${book.id}">
+        <button class="menu-icon-btn" onclick="moveSubBookOrder('${book.id}', -1)" title="উপরে তুলুন" ${index === 0 ? 'disabled style="opacity:0.3;"' : ''}>↑</button>
+        <button class="menu-icon-btn" onclick="moveSubBookOrder('${book.id}', 1)" title="নিচে নামান" ${index === subBooks.length - 1 ? 'disabled style="opacity:0.3;"' : ''}>↓</button>
+        <button class="menu-icon-btn copy-btn" onclick="duplicateSubBook('${book.id}')" title="ডুপ্লিকেট">📋</button>         
+        <button class="menu-icon-btn edit-btn" onclick="openEditSubBookModal('${book.id}')" title="এডিট">✏️</button>
+        <button class="menu-icon-btn del-btn" onclick="deleteSubBookConfirm('${book.id}')" title="ডিলিট">🗑️</button>
+      </div>
+    </div>
+  `;
+}).join('');
 }
 
 /* ============ Navigation ============ */
@@ -139,7 +150,9 @@ function openSubBook(bookId) {
 
 /* ============ Create / Edit Sub-Book ============ */
 function openCreateSubBookModal() {
+  
   editingSubBookId = null;
+  document.querySelectorAll('.book-menu-panel').forEach(m => m.classList.remove('open'));
   document.getElementById('subBookModalTitle').textContent = 'নতুন সাব-বুক তৈরি করুন';
   document.getElementById('subBookNameInput').value = '';
   document.getElementById('subBookIconInput').value = '📁';
@@ -219,6 +232,7 @@ async function saveSubBook() {
 
 /* ============ Delete Sub-Book ============ */
 async function deleteSubBookConfirm(bookId) {
+  document.querySelectorAll('.book-menu-panel').forEach(m => m.classList.remove('open'));
   const book = getBook(bookId);
   if (!book) return;
   
@@ -270,6 +284,7 @@ function openEditSubBookModal(bookId) {
   const book = getBook(bookId);
   if (!book) return;
   editingSubBookId = bookId;
+  document.querySelectorAll('.book-menu-panel').forEach(m => m.classList.remove('open'));
   document.getElementById('subBookModalTitle').textContent = 'সাব-বুক এডিট করুন';
   document.getElementById('subBookNameInput').value = book.name;
   document.getElementById('subBookIconInput').value = book.icon || '📁';
@@ -278,4 +293,160 @@ function openEditSubBookModal(bookId) {
   if (typeInput) typeInput.value = book.type || 'normal';
   document.getElementById('subBookModal').classList.add('open');
   setTimeout(() => document.getElementById('subBookNameInput').focus(), 200);
+}
+
+  /* ============ Sub-Book Menu & Ordering Logic ============ */
+
+// মেনু ওপেন/ক্লোজ করা
+function toggleSubBookMenu(bookId) {
+  const menu = document.getElementById(`book-menu-${bookId}`);
+  const allMenus = document.querySelectorAll('.book-menu-panel');
+  
+  // আগে খোলা থাকলে বন্ধ করে দিবে
+  allMenus.forEach(m => {
+    if (m.id !== `book-menu-${bookId}`) {
+      m.classList.remove('open');
+    }
+  });
+
+  // ক্লিক করা মেনুটাকে টগল করবে
+  menu.classList.toggle('open');
+}
+
+// ফাঁকা জায়গায় ক্লিক করলে মেনু বন্ধ হবে
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.book-actions') && !e.target.closest('.book-menu-panel')) {
+    document.querySelectorAll('.book-menu-panel').forEach(m => m.classList.remove('open'));
+  }
+});
+
+// অর্ডার পরিবর্তন করা
+async function moveSubBookOrder(bookId, direction) {
+  let subBooks = getBooks().filter(b => b.parentId === currentParentBook.id);
+  
+  subBooks.sort((a, b) => {
+    const orderA = a.order !== undefined ? a.order : 999999;
+    const orderB = b.order !== undefined ? b.order : 999999;
+    if (orderA !== orderB) return orderA - orderB;
+    return (b.createdAt || 0) - (a.createdAt || 0);
+  });
+
+  const currentIndex = subBooks.findIndex(b => b.id === bookId);
+  if (currentIndex === -1) return;
+
+  const newIndex = currentIndex + direction;
+  if (newIndex < 0 || newIndex >= subBooks.length) return;
+
+  const temp = subBooks[currentIndex];
+  subBooks[currentIndex] = subBooks[newIndex];
+  subBooks[newIndex] = temp;
+
+  // নতুন অর্ডার সেভ করা
+  for (let idx = 0; idx < subBooks.length; idx++) {
+    await updateBook(subBooks[idx].id, { order: idx });
+  }
+  
+  renderSubBooks();
+}
+
+// সাব-বুক ডুপ্লিকেট করা
+async function duplicateSubBook(bookId) {
+  const sourceBook = getBook(bookId);
+  if (!sourceBook) {
+    showToast('বুক পাওয়া যায়নি', 'error');
+    return;
+  }
+
+  const entryCount = getEntries(bookId).length;
+  const msg = entryCount > 0
+    ? `"${sourceBook.name}" সাব-বুকটি ডুপ্লিকেট করবেন? এর ${toBn(entryCount)}টি এন্ট্রিও কপি হবে।`
+    : `"${sourceBook.name}" সাব-বুকটি ডুপ্লিকেট করবেন?`;
+    
+  const ok = await askConfirm(msg, {
+    title: 'সাব-বুক ডুপ্লিকেট',
+    icon: '📋',
+    confirmLabel: 'হ্যাঁ, ডুপ্লিকেট',
+    danger: false
+  });
+  if (!ok) return;
+
+  try {
+    const newFields = JSON.parse(JSON.stringify(sourceBook.fields || []));
+    const newSummaryCards = JSON.parse(JSON.stringify(sourceBook.summaryCards || []));
+    const newChartSections = JSON.parse(JSON.stringify(sourceBook.chartSections || []));
+    const newDashboardCards = JSON.parse(JSON.stringify(sourceBook.dashboardCards || []));
+
+    const summaryIdMap = {};
+    newSummaryCards.forEach(card => {
+      const oldId = card.id;
+      card.id = generateId('card');
+      summaryIdMap[oldId] = card.id;
+    });
+
+    newChartSections.forEach(sec => {
+      sec.id = generateId('csec');
+    });
+
+    newDashboardCards.forEach(card => {
+      if (summaryIdMap[card.summaryId]) {
+        card.summaryId = summaryIdMap[card.summaryId];
+      }
+    });
+
+    const baseOrder = sourceBook.order !== undefined ? sourceBook.order : 999999;
+    const newBook = {
+      id: generateId('book'),
+      name: sourceBook.name + ' (কপি)',
+      icon: sourceBook.icon || '📁',
+      color: sourceBook.color || 'linear-gradient(135deg,#DBEAFE,#BFDBFE)',
+      type: sourceBook.type || 'normal',
+      parentId: sourceBook.parentId || currentParentBook.id, // 👈 প্যারেন্ট আইডি নিশ্চিত করা
+      fields: newFields,
+      summaryCards: newSummaryCards,
+      chartSections: newChartSections,
+      dashboardCards: newDashboardCards,
+      order: baseOrder + 0.001,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+
+    const added = await addBook(newBook);
+    if (!added) {
+      showToast('ডুপ্লিকেট ব্যর্থ', 'error');
+      return;
+    }
+
+    if (entryCount > 0) {
+      const sourceEntries = getEntries(bookId);
+      const newEntries = sourceEntries.map(e => {
+        const { id, ...rest } = e;
+        return {
+          ...JSON.parse(JSON.stringify(rest)),
+          id: generateId('entry'),
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
+      });
+      await saveEntries(newBook.id, newEntries);
+    }
+
+    // অর্ডার রি-ইনডেক্স করা
+    const allSubBooks = getBooks().filter(b => b.parentId === currentParentBook.id);
+    allSubBooks.sort((a, b) => {
+      const oa = a.order !== undefined ? a.order : 999999;
+      const ob = b.order !== undefined ? b.order : 999999;
+      if (oa !== ob) return oa - ob;
+      return (a.createdAt || 0) - (b.createdAt || 0);
+    });
+    for (let idx = 0; idx < allSubBooks.length; idx++) {
+      await updateBook(allSubBooks[idx].id, { order: idx });
+    }
+
+    renderSubBooks();
+    showToast(`"${newBook.name}" ডুপ্লিকেট হয়েছে ✅`, 'success');
+
+  } catch (err) {
+    console.error('Duplicate failed:', err);
+    showToast('ডুপ্লিকেট ব্যর্থ: ' + err.message, 'error');
+  }
 }

@@ -125,13 +125,14 @@ const isDashboard = book.type === 'dashboard';
 const iconDisplay = isDashboard ? '📊' : (book.icon || '📘');
 
 // 👇 নতুন লজিক: সাব-বুকের সংখ্যা যোগ করি (আগেই লোড করা books থেকে)
-const subBookCount = books.filter(b => b.parentId === book.id).length;
-const subBookText = subBookCount > 0 ? ` • ${toBn(subBookCount)}টি সাব-বুক` : '';
+// 👇 সাব-বুকের সংখ্যা বের করি (সব বুক থেকে, শুধু ফিল্টার করা বুক থেকে নয়)
+const allBooks = getBooks();
+const subBookCount = allBooks.filter(b => b.parentId === book.id).length;
 
+// 👇 শুধু সাব-বুকের সংখ্যা দেখাব
 const metaDisplay = isDashboard 
-? `📊 ড্যাশবোর্ড বুক • ${toBn((book.dashboardCards || []).length)}টি কার্ড`
-: `${toBn(entryCount)}টি এন্ট্রি • ${Array.isArray(book.fields) ? toBn(book.fields.length) + 'টি ফিল্ড' : 'শূন্য ফিল্ড'}${subBookText}`;
-
+  ? `📊 ড্যাশবোর্ড বুক • ${toBn((book.dashboardCards || []).length)}টি কার্ড`
+  : `${toBn(subBookCount)}টি সাব-বুক`;
 return `
   <div class="book-card-wrapper" id="book-wrapper-${book.id}">
     <!-- মূল বুক কার্ড -->
