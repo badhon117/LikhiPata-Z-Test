@@ -92,8 +92,8 @@ function renderBooks() {
   const empty = document.getElementById('emptyState');
   const countBadge = document.getElementById('bookCount');
   const statBooks = document.getElementById('statBooks');
+  const statSubBooks = document.getElementById('statSubBooks'); // 👈 নতুন লাইন
   const statEntries = document.getElementById('statEntries');
-
   
   // 👇 নতুন লজিক: order অনুযায়ী সাজানো (যার order ছোট, সে আগে থাকবে)
 books.sort((a, b) => {
@@ -104,12 +104,22 @@ books.sort((a, b) => {
   return (b.createdAt || 0) - (a.createdAt || 0); // order সমান হলে নতুন আগে
 });
 
-  let totalEntries = 0;
-  books.forEach(b => { totalEntries += getEntries(b.id).length; });
-  if (statBooks) statBooks.textContent = toBn(books.length);
-  if (statEntries) statEntries.textContent = toBn(totalEntries);
-  if (countBadge) countBadge.textContent = toBn(books.length) + 'টি';
+  // 👇 সব বুক (মূল ও সাব) নিয়ে কাজ করি যাতে সঠিক হিসাব পাওয়া যায়
+const allBooks = getBooks(); 
 
+// মোট সাব-বুকের সংখ্যা
+const totalSubBooks = allBooks.filter(b => b.parentId).length;
+
+// মোট এন্ট্রির সংখ্যা (সব বুক ও সাব-বুকের এন্ট্রি একসাথে)
+let totalEntries = 0;
+allBooks.forEach(b => { totalEntries += getEntries(b.id).length; });
+
+// UI আপডেট
+if (statBooks) statBooks.textContent = toBn(books.length); // books হলো শুধু মূল বুক
+if (statSubBooks) statSubBooks.textContent = toBn(totalSubBooks); // নতুন সাব-বুক কাউন্ট
+if (statEntries) statEntries.textContent = toBn(totalEntries); // মোট এন্ট্রি
+if (countBadge) countBadge.textContent = toBn(books.length) + 'টি';
+  
   if (books.length === 0) {
     list.innerHTML = '';
     empty.style.display = 'block';
